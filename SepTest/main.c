@@ -68,24 +68,21 @@ void tempRead( void *pvParameters ){
 	int humidity = 0;
 	for(;;)
 	{
-		//puts("it works");
 		xTaskDelayUntil( &xLastWakeTime, xFrequency );
-		//puts("it works");
 		if(hih8120_wakeup() != HIH8120_OK){
 			puts("Error while waking up the sensor");
 			} //wake up the sensor
 		vTaskDelay(pdMS_TO_TICKS(60)); // Wait for sensor to wake up
 		hih8120_measure(); //measure temperature and humidity
 		vTaskDelay(pdMS_TO_TICKS(10)); //wait for the measuring to be finished
-		//if (hih8120_isReady()) {
-			temperature = hih8120_getTemperature();
-			printf("%f", temperature);
-			display_7seg_display(temperature, 1);
-			humidity = (uint8_t)hih8120_getHumidity();
-			printf("%d", humidity);
-			vTaskDelay(pdMS_TO_TICKS(1000));
-			//display_7seg_display(humidity, 1);
-		//}
+		
+		temperature = hih8120_getTemperature();
+		printf("%f", temperature);
+		display_7seg_display(temperature, 1);
+		humidity = (uint8_t)hih8120_getHumidity();
+		printf("%d", humidity);
+		vTaskDelay(pdMS_TO_TICKS(1000));
+		//display_7seg_display(humidity, 1);
 
 		PORTA ^= _BV(PA7);
 	}
@@ -103,7 +100,7 @@ void initialiseSystem()
 	// Let's create some tasks
 	create_tasks_and_semaphores();
 
-	// vvvvvvvvvvvvvvvvv BELOW IS LoRaWAN initialization vvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+	// BELOW IS LoRaWAN initialization
 	// Status LEDs driver
 	//status_leds_initialise(5); // Priority 5 for internal task
 	// Initialize the LoRaWAN driver without down-link buffer
@@ -115,7 +112,7 @@ void initialiseSystem()
 /*-----------------------------------------------------------*/
 int main(void)
 {
-	initialiseSystem(); // Must be done as the very first thing!!
+	initialiseSystem(); 
 	printf("Program started.");
 	if ( HIH8120_OK != hih8120_initialise() )
 	{
