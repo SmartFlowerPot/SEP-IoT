@@ -72,12 +72,12 @@ void tempRead( void *pvParameters ){
 		xTaskDelayUntil( &xLastWakeTime, xFrequency );
 		//puts("it works");
 		if(hih8120_wakeup() != HIH8120_OK){
-			puts("Error while waking up the sensor")
+			puts("Error while waking up the sensor");
 			} //wake up the sensor
 		vTaskDelay(pdMS_TO_TICKS(60)); // Wait for sensor to wake up
 		hih8120_measure(); //measure temperature and humidity
 		vTaskDelay(pdMS_TO_TICKS(10)); //wait for the measuring to be finished
-		if (hih8120_isReady() ==) {
+		//if (hih8120_isReady()) {
 			temperature = hih8120_getTemperature();
 			printf("%f", temperature);
 			display_7seg_display(temperature, 1);
@@ -119,7 +119,7 @@ int main(void)
 	printf("Program started.");
 	if ( HIH8120_OK != hih8120_initialise() )
 	{
-		//puts("Humidity&Temperature sensor initialized.");
+		puts("Humidity&Temperature sensor initialized.");
 	}
 	// initialize display without any callback function
 	display_7seg_initialise(NULL);
