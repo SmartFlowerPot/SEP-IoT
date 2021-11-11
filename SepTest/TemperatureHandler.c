@@ -79,3 +79,7 @@ void temperature_handler_init(Temperature_t self, uint16_t priority){
 	xEventGroupSetBits(group_start, ready_bit);
 	xTaskCreate(startReading, "Temperature task", configMINIMAL_STACK_SIZE,(void *) self, priority, NULL);
 }
+
+float getTemperature(Temperature_t self){
+	return self->temperature;
+}

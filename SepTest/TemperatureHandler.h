@@ -14,3 +14,4 @@
 typedef struct TemperatureHandler* Temperature_t; 
 
 Temperature_t createTemp(uint16_t priority, EventGroupHandle_t taskBits, EventBits_t bit);
+float getTemperature(Temperature_t self);

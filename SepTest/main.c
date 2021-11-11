@@ -15,6 +15,9 @@
 #include "TemperatureHandler.h"
 #include "event_groups.h"
 
+#include "UplinkHandler.h"
+
+
 // define semaphore handle
 SemaphoreHandle_t xTestSemaphore;
 
@@ -40,9 +43,9 @@ void create_tasks_and_semaphores(void)
 		}
 	}
 	
-	//temperature task
-	//xTaskCreate(tempRead, "Task 3 Temp", configMINIMAL_STACK_SIZE, NULL, 3, NULL);
+	
 	createTasksForSensors();
+	lora_handler_initialize(4, temperature_sensor);
 }
 
 void createTasksForSensors(){
@@ -52,9 +55,11 @@ void createTasksForSensors(){
 void initializeSystem(){
 	// initialize ready bits
 	taskReadyBits = xEventGroupCreate();
+	
 	// Make it possible to use stdio on COM port 3 (USB) on Arduino board - Setting 57600,8,N,1
 	stdio_initialise(ser_USART0);
 	// Method for tasks and semaphore
+	lora_driver_initialise(ser_USART1, NULL);
 	create_tasks_and_semaphores();
 }
 
