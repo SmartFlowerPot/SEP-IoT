@@ -1,9 +1,4 @@
-/*
- * TemperatureHandler.c
- *
- * Created: 11-Nov-21 10:09:36 AM
- *  Author: cirst
- */ 
+
 //Humidity  and temperature sensor
 #include <stdint.h>
 #include <hih8120.h>
@@ -37,7 +32,7 @@ Temperature_t createTemp(uint16_t priority, EventGroupHandle_t taskBits, EventBi
 	
 	if (HIH8120_OK == hih8120_initialise())
 	{
-		puts("Temp sensor initialized.\n");
+		puts("Temp sensor initialized.");
 	}
 	
 	temperature_handler_init(new_measure, priority);
@@ -71,8 +66,8 @@ void startReading(void* self){
 }
 
 void measureTemp(Temperature_t self){
-	self->temperature += hih8120_getTemperature();
-	printf("%f", self->temperature);
+	self->temperature = hih8120_getTemperature();
+	printf("%f \n", self->temperature);
 }
 
 void temperature_handler_init(Temperature_t self, uint16_t priority){

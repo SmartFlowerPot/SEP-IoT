@@ -161,9 +161,6 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="LoraReceiveHandler.c">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="drivers\display_7seg.h">
       <SubType>compile</SubType>
     </Compile>
@@ -216,6 +213,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="TemperatureHandler.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="UplinkHandler.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="UplinkHandler.h">
       <SubType>compile</SubType>
     </Compile>
     <None Include="FreeRTOS\Example\main.c">
