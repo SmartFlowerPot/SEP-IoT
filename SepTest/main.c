@@ -13,11 +13,16 @@
 #include <status_leds.h>
 
 #include "TemperatureHandler.h"
+#include "event_groups.h"
 
 // define semaphore handle
 SemaphoreHandle_t xTestSemaphore;
 
 Temperature_t temperature_sensor;
+
+EventGroupHandle_t taskReadyBits = NULL;
+
+#define BIT_TEMP_READY (1 << 0)
 
 
 
@@ -41,10 +46,12 @@ void create_tasks_and_semaphores(void)
 }
 
 void createTasksForSensors(){
-	temperature_sensor = createTemp();
+	temperature_sensor = createTemp(3, taskReadyBits, BIT_TEMP_READY);
 }
 
 void initializeSystem(){
+	// initialize ready bits
+	taskReadyBits = xEventGroupCreate();
 	// Make it possible to use stdio on COM port 3 (USB) on Arduino board - Setting 57600,8,N,1
 	stdio_initialise(ser_USART0);
 	// Method for tasks and semaphore

@@ -9,8 +9,8 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include "event_groups.h"
 
 typedef struct TemperatureHandler* Temperature_t; 
 
-Temperature_t createTemp();
-void start();
+Temperature_t createTemp(uint16_t priority, EventGroupHandle_t taskBits, EventBits_t bit);
