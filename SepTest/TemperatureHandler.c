@@ -67,7 +67,7 @@ void startReading(void* self){
 
 void measureTemp(Temperature_t self){
 	self->temperature = hih8120_getTemperature();
-	printf("%f \n", self->temperature);
+	//printf("%f \n", self->temperature);
 }
 
 void temperature_handler_init(Temperature_t self, uint16_t priority){

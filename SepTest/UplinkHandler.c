@@ -7,6 +7,8 @@
 
 #include <lora_driver.h>
 #include "TemperatureHandler.h"
+#include <math.h>
+#include <stdio.h>
 
 #define LORA_appEUI "9276B3CF3B069355"
 #define LORA_appKEY "84860CBA5C5116F9EC56E1B4346CA899"
@@ -17,9 +19,9 @@ static lora_driver_payload_t _uplink_payload;
 
 void lora_handler_task(void* pvParameters);
 
-void lora_handler_initialize(uint16_t lora_handler_task_priority, Temperature_t temperature){
+void lora_handler_initialize(uint16_t lora_handler_task_priority, Temperature_t temperatureObject){
 	
-	temperature = temperature;
+	temperature = temperatureObject;
 
 	xTaskCreate(
 	lora_handler_task
@@ -118,8 +120,9 @@ void lora_handler_task(void* pvParameters){
 	_lora_setup();
 	
 	TickType_t xLastWakeTime;
-	const TickType_t xFrequency = pdMS_TO_TICKS(300000UL); // Upload message every 5 minutes (300000 ms)
+	const TickType_t xFrequency = pdMS_TO_TICKS(10000UL); // Upload message every 5 minutes (300000 ms)
 	xLastWakeTime = xTaskGetTickCount();
+	
 	
 	for(;;){
 		xTaskDelayUntil(&xLastWakeTime, xFrequency);
@@ -128,13 +131,18 @@ void lora_handler_task(void* pvParameters){
 		
 		lora_driver_payload_t downlinkPayload;
 		
-		float temp = getTemperature(temperature);
-		int val1, val2;
+		double temp =(double) getTemperature(temperature);
+		
+		
+		double val1=0;
+		double val2=0;
 		
 		val2 = modf(temp, &val1);
 		
-		_uplink_payload.bytes[0] = val1;
-		_uplink_payload.bytes[1] = val2;
+		val2 = val2 * 100;
+		
+		_uplink_payload.bytes[0] = (int) val1;
+		_uplink_payload.bytes[1] = (int) val2;		
 		
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
 	}
