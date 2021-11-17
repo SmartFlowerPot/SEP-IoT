@@ -15,7 +15,7 @@ Temperature_t temperature;
 static lora_driver_payload_t _uplink_payload;
 
 
-void lora_handler_task();
+void lora_handler_task(void* pvParameters);
 
 void lora_handler_initialize(uint16_t lora_handler_task_priority, Temperature_t temperature){
 	
@@ -104,7 +104,7 @@ static void _lora_setup(void)
 	}
 }
 
-void lora_handler_task(){
+void lora_handler_task(void* pvParameters){
 	
 	// Hardware reset of LoRaWAN transceiver
 	lora_driver_resetRn2483(1);
