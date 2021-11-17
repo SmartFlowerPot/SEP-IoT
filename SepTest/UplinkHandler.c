@@ -117,23 +117,26 @@ void lora_handler_task(){
 
 	_lora_setup();
 	
-	
-	_uplink_payload.len = 2;
-	_uplink_payload.portNo = 1;
-	
-	lora_driver_payload_t downlinkPayload;
-
 	TickType_t xLastWakeTime;
 	const TickType_t xFrequency = pdMS_TO_TICKS(300000UL); // Upload message every 5 minutes (300000 ms)
 	xLastWakeTime = xTaskGetTickCount();
 	
-	float temp = getTemperature(temperature);
-	int val1, val2;
+	for(;;){
+		xTaskDelayUntil(&xLastWakeTime, xFrequency);
+		_uplink_payload.len = 2;
+		_uplink_payload.portNo = 1;
+		
+		lora_driver_payload_t downlinkPayload;
+		
+		float temp = getTemperature(temperature);
+		int val1, val2;
+		
+		val2 = modf(temp, &val1);
+		
+		_uplink_payload.bytes[0] = val1;
+		_uplink_payload.bytes[1] = val2;
+		
+		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
+	}
 	
-	val2 = modf(temp, &val1);
-	
-	_uplink_payload.bytes[0] = val1;
-	_uplink_payload.bytes[1] = val2;
-	
-	printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
 }
