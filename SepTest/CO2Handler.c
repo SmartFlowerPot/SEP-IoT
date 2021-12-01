@@ -43,7 +43,7 @@ CO2_t createCO2(uint16_t priority, EventGroupHandle_t taskBits, EventBits_t bit)
 	
 	//maybe wait time here?
 	mh_z19_initialise(ser_USART3);
-	vTaskDelay(pdMS_TO_TICKS(70));
+	
 	mh_z19_injectCallBack(CO2_callback);
 	
 	CO2_handler_init(priority, new_measure);
@@ -74,6 +74,7 @@ void startReadingCO2(void* self) {
 			// Something went wrong
 		} else {
 			((CO2_t)self)->CO2 = ppm;
+			printf("CO2 %d", ppm);
 		}
 		
 	}
@@ -89,6 +90,8 @@ void CO2_handler_init(uint16_t CO2_task_priority, CO2_t self){
 	, (void*)self
 	, CO2_task_priority
 	, NULL);
+	
+	puts("CO2 initialized");
 }
 
 
