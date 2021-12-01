@@ -7,6 +7,7 @@
 
 #include <lora_driver.h>
 #include "TemperatureHandler.h"
+#include "CO2Handler.h"
 #include <math.h>
 #include <stdio.h>
 
@@ -14,14 +15,16 @@
 #define LORA_appKEY "84860CBA5C5116F9EC56E1B4346CA899"
 
 Temperature_t temperature;
+CO2_t co2;
 static lora_driver_payload_t _uplink_payload;
 
 
 void lora_handler_task(void* pvParameters);
 
-void lora_handler_initialize(uint16_t lora_handler_task_priority, Temperature_t temperatureObject){
+void lora_handler_initialize(uint16_t lora_handler_task_priority, Temperature_t temperatureObject, CO2_t co2Object){
 	
 	temperature = temperatureObject;
+	co2 = co2Object;
 
 	xTaskCreate(
 	lora_handler_task
@@ -131,18 +134,18 @@ void lora_handler_task(void* pvParameters){
 		
 		lora_driver_payload_t downlinkPayload;
 		
+		//temperature
 		double temp =(double) getTemperature(temperature);
-		
-		
 		double val1=0;
 		double val2=0;
-		
 		val2 = modf(temp, &val1);
-		
 		val2 = val2 * 100;
-		
 		_uplink_payload.bytes[0] = (int) val1;
-		_uplink_payload.bytes[1] = (int) val2;		
+		_uplink_payload.bytes[1] = (int) val2;	
+		
+		//co2
+		uint16_t co2_val = getCO2(co2);
+		printf("co2: %d", co2_val);
 		
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
 	}

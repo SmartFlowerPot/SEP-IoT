@@ -1,27 +1,33 @@
-/*
- * CO2Handler.c
- *  Author: IoT Team (Bogdan, Goshia, Claudiu)
+
+ //* CO2Handler.c
+ //*  Author: IoT Team (Bogdan, Goshia, Claudiu)
  
 
 #include <stdint.h>
-#include <hih8120.h>
-
 #include <stdio.h>
 #include <ATMEGA_FreeRTOS.h>
 #include <task.h>
 #include <semphr.h>
+#include <mh_z19.h>
 
 #include "CO2Handler.h"
 
 EventGroupHandle_t group_start;
 EventBits_t ready_bit;
 
-void startReading(void* self);
+mh_z19_returnCode_t rc;
+uint16_t ppm;
+
+void startReadingCO2(void* self);
 
 typedef struct CO2Handler{
-	int CO2;
+	uint16_t CO2;
 	} CO2Handler;
 	
+	
+void CO2_callback(uint16_t callback){
+	ppm = callback;
+}
 
 CO2_t createCO2(uint16_t priority, EventGroupHandle_t taskBits, EventBits_t bit)
 {
@@ -35,39 +41,49 @@ CO2_t createCO2(uint16_t priority, EventGroupHandle_t taskBits, EventBits_t bit)
 	group_start = taskBits;
 	ready_bit = bit;
 	
-	if(mh_z19_OK == mh_z19_initialise(ser_USART3))
-	{
-		puts("CO2 sensor initialized");
-	}
+	//maybe wait time here?
+	mh_z19_initialise(ser_USART3);
+	vTaskDelay(pdMS_TO_TICKS(70));
+	mh_z19_injectCallBack(CO2_callback);
 	
-	CO2_initialize_task(co2_task_priority, _new_reader);
-	
+	CO2_handler_init(priority, new_measure);
 	return new_measure;
 }
 
-void measureCO2(CO2_t self){
-	self->CO2 = mh_z19_takeMeassuring();
-	printf("%f \n", self->CO2);
+uint16_t getCO2(CO2_t self){
+	return self->CO2;
 }
 
-void start_CO2_task(void* self) {
+void startReadingCO2(void* self) {
 	TickType_t xLastWakeTime;
 	const TickType_t xFrequency = pdMS_TO_TICKS(16000UL);
 	xLastWakeTime = xTaskGetTickCount();
 	for (;;)
 	{
 		xTaskDelayUntil(&xLastWakeTime, xFrequency);
-		CO2_handler_task((CO2Handler_t)self);
+		//need to set bits
+		EventBits_t readyBits = xEventGroupWaitBits(group_start,
+		ready_bit,
+		pdFALSE,
+		pdTRUE,
+		portMAX_DELAY);
+		
+		rc = mh_z19_takeMeassuring();
+		if (rc != MHZ19_OK)
+		{
+			// Something went wrong
+		} else {
+			((CO2_t)self)->CO2 = ppm;
+		}
+		
 	}
 }
 
-void CO2_initialize_task(UBaseType_t CO2_task_priority, CO2Handler_t self)
-{
-
-	xEventGroupSetBits(task_startGroup, _readyBit);
+void CO2_handler_init(uint16_t CO2_task_priority, CO2_t self){
+	xEventGroupSetBits(group_start, ready_bit);
 
 	xTaskCreate(
-	start_CO2_task
+	startReadingCO2
 	, "CO2Task"
 	, configMINIMAL_STACK_SIZE + 100
 	, (void*)self
@@ -75,11 +91,4 @@ void CO2_initialize_task(UBaseType_t CO2_task_priority, CO2Handler_t self)
 	, NULL);
 }
 
-void CO2_handler_task(CO2Handler_t self) {
-	EventBits_t readyBits = xEventGroupWaitBits(task_startGroup,
-	_readyBit,
-	pdFALSE,
-	pdTRUE,
-	portMAX_DELAY);
-}
-*/ 
+

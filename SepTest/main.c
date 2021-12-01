@@ -13,6 +13,7 @@
 #include <status_leds.h>
 
 #include "TemperatureHandler.h"
+#include "CO2Handler.h"
 #include "event_groups.h"
 
 #include "UplinkHandler.h"
@@ -22,11 +23,12 @@
 SemaphoreHandle_t xTestSemaphore;
 
 Temperature_t temperature_sensor;
+CO2_t co2_sensor;
 
 EventGroupHandle_t taskReadyBits = NULL;
 
 #define BIT_TEMP_READY (1 << 0)
-
+#define BIT_CO2_READY (1 << 1)
 
 
 void create_tasks_and_semaphores(void)
@@ -45,11 +47,12 @@ void create_tasks_and_semaphores(void)
 	
 	
 	createTasksForSensors();
-	lora_handler_initialize(4, temperature_sensor);
+	lora_handler_initialize(4, temperature_sensor, co2_sensor);
 }
 
 void createTasksForSensors(){
 	temperature_sensor = createTemp(3, taskReadyBits, BIT_TEMP_READY);
+	co2_sensor = createCO2(3, taskReadyBits, BIT_CO2_READY);
 }
 
 void initializeSystem(){

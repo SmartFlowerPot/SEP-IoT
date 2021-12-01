@@ -27,7 +27,7 @@ main.d main.o: .././main.c \
  ../drivers/status_leds.h .././TemperatureHandler.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
  ../FreeRTOS/src/event_groups.h ../FreeRTOS/src/timers.h \
- .././UplinkHandler.h
+ .././CO2Handler.h .././UplinkHandler.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdio.h:
 
@@ -106,5 +106,7 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ../FreeRTOS/src/event_groups.h:
 
 ../FreeRTOS/src/timers.h:
+
+.././CO2Handler.h:
 
 .././UplinkHandler.h:
