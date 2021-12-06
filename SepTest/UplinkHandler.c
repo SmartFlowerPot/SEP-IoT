@@ -14,7 +14,7 @@
 #define LORA_appEUI "9276B3CF3B069355"
 #define LORA_appKEY "84860CBA5C5116F9EC56E1B4346CA899"
 
-Temperature_t temperature;
+Temperature_t temperatureAndHumidity;
 CO2_t co2;
 static lora_driver_payload_t _uplink_payload;
 
@@ -23,7 +23,7 @@ void lora_handler_task(void* pvParameters);
 
 void lora_handler_initialize(uint16_t lora_handler_task_priority, Temperature_t temperatureObject, CO2_t co2Object){
 	
-	temperature = temperatureObject;
+	temperatureAndHumidity = temperatureObject;
 	co2 = co2Object;
 
 	xTaskCreate(
@@ -129,25 +129,34 @@ void lora_handler_task(void* pvParameters){
 	
 	for(;;){
 		xTaskDelayUntil(&xLastWakeTime, xFrequency);
-		_uplink_payload.len = 2;
+		_uplink_payload.len = 5;
 		_uplink_payload.portNo = 1;
 		
 		lora_driver_payload_t downlinkPayload;
 		
 		//temperature
-		double temp =(double) getTemperature(temperature);
+		double temp =(double) getTemperature(temperatureAndHumidity);
 		double val1=0;
 		double val2=0;
 		val2 = modf(temp, &val1);
 		val2 = val2 * 100;
+		printf("\ntemp: %f", temp);
 		_uplink_payload.bytes[0] = (int) val1;
 		_uplink_payload.bytes[1] = (int) val2;	
 		
+		//humidity
+		uint16_t humidity = getHumidity(temperatureAndHumidity);
+		printf("\nhumidity: %d", humidity);
+		_uplink_payload.bytes[2] = humidity;
+		
 		//co2
 		uint16_t co2_val = getCO2(co2);
-		printf("co2: %d", co2_val);
+		printf("\nco2: %d", co2_val);
+		_uplink_payload.bytes[3] = co2_val>>8;
+		_uplink_payload.bytes[4] = co2_val&0xFF;
 		
-		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
+		
+		//printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
 	}
 	
 }

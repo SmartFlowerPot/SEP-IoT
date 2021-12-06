@@ -17,6 +17,7 @@ void startReading(void* self);
 
 typedef struct TemperatureHandler{
 	float temperature;
+	uint16_t humidity;
 	} TemperatureHandler;
 	
 
@@ -26,6 +27,7 @@ Temperature_t createTemp(uint16_t priority, EventGroupHandle_t taskBits, EventBi
 		return NULL;
 	}
 	new_measure ->temperature = 0.0;
+	new_measure ->humidity = 0;
 	
 	group_start = taskBits;
 	ready_bit = bit;
@@ -61,12 +63,13 @@ void startReading(void* self){
 		hih8120_measure(); //measure temperature and humidity
 		vTaskDelay(pdMS_TO_TICKS(15)); //wait for the measuring to be finished
 		
-		measureTemp((Temperature_t) self);
+		measureTempAndHum((Temperature_t) self);
 	}
 }
 
-void measureTemp(Temperature_t self){
+void measureTempAndHum(Temperature_t self){
 	self->temperature = hih8120_getTemperature();
+	self->humidity = hih8120_getHumidityPercent_x10();
 	//printf("%f \n", self->temperature);
 }
 
@@ -77,4 +80,9 @@ void temperature_handler_init(Temperature_t self, uint16_t priority){
 
 float getTemperature(Temperature_t self){
 	return self->temperature;
+}
+
+uint16_t getHumidity(Temperature_t self)
+{
+	return self -> humidity;
 }
