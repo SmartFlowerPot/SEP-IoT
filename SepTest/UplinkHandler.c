@@ -145,7 +145,7 @@ void lora_handler_task(void* pvParameters){
 		_uplink_payload.bytes[1] = (int) val2;	
 		
 		//humidity
-		uint16_t humidity = getHumidity(temperatureAndHumidity);
+		uint16_t humidity = getHumidity(temperatureAndHumidity)/10;
 		printf("\nhumidity: %d", humidity);
 		_uplink_payload.bytes[2] = humidity;
 		
@@ -156,7 +156,7 @@ void lora_handler_task(void* pvParameters){
 		_uplink_payload.bytes[4] = co2_val&0xFF;
 		
 		
-		//printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
+		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
 	}
 	
 }
