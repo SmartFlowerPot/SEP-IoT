@@ -26,6 +26,7 @@ UplinkHandler.d UplinkHandler.o: .././UplinkHandler.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdio.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdarg.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
+ ../FreeRTOS/src/semphr.h ../FreeRTOS/src/queue.h \
  ../FreeRTOS/src/event_groups.h ../FreeRTOS/src/timers.h \
  .././CO2Handler.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h
@@ -93,6 +94,10 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdarg.h:
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h:
+
+../FreeRTOS/src/semphr.h:
+
+../FreeRTOS/src/queue.h:
 
 ../FreeRTOS/src/event_groups.h:
 

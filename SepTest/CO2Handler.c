@@ -14,6 +14,7 @@
 
 EventGroupHandle_t group_start;
 EventBits_t ready_bit;
+SemaphoreHandle_t xMutexSemaphore;
 
 mh_z19_returnCode_t rc;
 uint16_t ppm;
@@ -29,7 +30,7 @@ void CO2_callback(uint16_t callback){
 	ppm = callback;
 }
 
-CO2_t createCO2(uint16_t priority, EventGroupHandle_t taskBits, EventBits_t bit)
+CO2_t createCO2(uint16_t priority, EventGroupHandle_t taskBits, EventBits_t bit, SemaphoreHandle_t mutex)
 {
 	CO2_t new_measure = malloc(sizeof(CO2Handler));
 	if(new_measure == NULL)
@@ -40,7 +41,7 @@ CO2_t createCO2(uint16_t priority, EventGroupHandle_t taskBits, EventBits_t bit)
 	
 	group_start = taskBits;
 	ready_bit = bit;
-	
+	xMutexSemaphore = mutex;
 	//maybe wait time here?
 	mh_z19_initialise(ser_USART3);
 	
@@ -69,12 +70,21 @@ void startReadingCO2(void* self) {
 		portMAX_DELAY);
 		
 		rc = mh_z19_takeMeassuring();
-		if (rc != MHZ19_OK)
-		{
+		if (rc != MHZ19_OK){
 			// Something went wrong
 		} else {
-			((CO2_t)self)->CO2 = ppm;
-			printf("CO2 %d", ppm);
+			
+			if(xMutexSemaphore != NULL){
+				if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 10) == pdTRUE){
+					((CO2_t)self)->CO2 = ppm;
+					printf("CO2 %d", ppm);
+					xSemaphoreGive(xMutexSemaphore);
+				}
+				else{
+					printf("The mutex could not be obtained.");
+				}
+			}
+			
 		}
 		
 	}

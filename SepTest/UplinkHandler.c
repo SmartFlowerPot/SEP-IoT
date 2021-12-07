@@ -17,15 +17,15 @@
 Temperature_t temperatureAndHumidity;
 CO2_t co2;
 static lora_driver_payload_t _uplink_payload;
-
+SemaphoreHandle_t xMutexSemaphore;
 
 void lora_handler_task(void* pvParameters);
 
-void lora_handler_initialize(uint16_t lora_handler_task_priority, Temperature_t temperatureObject, CO2_t co2Object){
+void lora_handler_initialize(uint16_t lora_handler_task_priority, Temperature_t temperatureObject, CO2_t co2Object, SemaphoreHandle_t mutex){
 	
 	temperatureAndHumidity = temperatureObject;
 	co2 = co2Object;
-
+	xMutexSemaphore = mutex;
 	xTaskCreate(
 	lora_handler_task
 	, "LoRaWAN Hand"
@@ -134,8 +134,22 @@ void lora_handler_task(void* pvParameters){
 		
 		lora_driver_payload_t downlinkPayload;
 		
+		double temp = 0.0;
+		uint16_t humidity = 0;
+		uint16_t co2_val = 0;
+		if(xMutexSemaphore != NULL){
+			if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 10) == pdTRUE){
+				temp = (double) getTemperature(temperatureAndHumidity);
+				humidity = getHumidity(temperatureAndHumidity)/10;
+				co2_val = getCO2(co2);
+				xSemaphoreGive(xMutexSemaphore);
+			}
+			else{
+			   printf("The mutex could not be obtained.");
+			}
+		}
+			
 		//temperature
-		double temp =(double) getTemperature(temperatureAndHumidity);
 		double val1=0;
 		double val2=0;
 		val2 = modf(temp, &val1);
@@ -145,12 +159,12 @@ void lora_handler_task(void* pvParameters){
 		_uplink_payload.bytes[1] = (int) val2;	
 		
 		//humidity
-		uint16_t humidity = getHumidity(temperatureAndHumidity)/10;
+		
 		printf("\nhumidity: %d", humidity);
 		_uplink_payload.bytes[2] = humidity;
 		
 		//co2
-		uint16_t co2_val = getCO2(co2);
+		
 		printf("\nco2: %d", co2_val);
 		_uplink_payload.bytes[3] = co2_val>>8;
 		_uplink_payload.bytes[4] = co2_val&0xFF;

@@ -12,6 +12,7 @@
 
 EventGroupHandle_t group_start;
 EventBits_t ready_bit;
+SemaphoreHandle_t xMutexSemaphore;
 
 void startReading(void* self);
 
@@ -21,7 +22,7 @@ typedef struct TemperatureHandler{
 	} TemperatureHandler;
 	
 
-Temperature_t createTemp(uint16_t priority, EventGroupHandle_t taskBits, EventBits_t bit){
+Temperature_t createTemp(uint16_t priority, EventGroupHandle_t taskBits, EventBits_t bit, SemaphoreHandle_t mutex){
 	Temperature_t new_measure = malloc(sizeof(TemperatureHandler));
 	if(new_measure == NULL){
 		return NULL;
@@ -31,6 +32,7 @@ Temperature_t createTemp(uint16_t priority, EventGroupHandle_t taskBits, EventBi
 	
 	group_start = taskBits;
 	ready_bit = bit;
+	xMutexSemaphore = mutex;
 	
 	if (HIH8120_OK == hih8120_initialise())
 	{
@@ -68,9 +70,15 @@ void startReading(void* self){
 }
 
 void measureTempAndHum(Temperature_t self){
-	self->temperature = hih8120_getTemperature();
-	self->humidity = hih8120_getHumidityPercent_x10();
-	//printf("%f \n", self->temperature);
+	if(xMutexSemaphore != NULL){
+		if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 10) == pdTRUE){
+			self->temperature = hih8120_getTemperature();
+			self->humidity = hih8120_getHumidityPercent_x10();
+			xSemaphoreGive(xMutexSemaphore);
+		}else{
+			printf("The mutex could not be obtained.");
+		}
+	}
 }
 
 void temperature_handler_init(Temperature_t self, uint16_t priority){
@@ -82,7 +90,6 @@ float getTemperature(Temperature_t self){
 	return self->temperature;
 }
 
-uint16_t getHumidity(Temperature_t self)
-{
+uint16_t getHumidity(Temperature_t self){
 	return self -> humidity;
 }
