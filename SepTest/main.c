@@ -14,6 +14,7 @@
 
 #include "TemperatureHandler.h"
 #include "CO2Handler.h"
+#include "LightHandler.h"
 #include "event_groups.h"
 
 #include "UplinkHandler.h"
@@ -26,11 +27,13 @@ SemaphoreHandle_t xMutexSemaphore;
 
 Temperature_t temperature_sensor;
 CO2_t co2_sensor;
+LightHandler_t lighthandler;
 
 EventGroupHandle_t taskReadyBits = NULL;
 
 #define BIT_TEMP_READY (1 << 0)
 #define BIT_CO2_READY (1 << 1)
+#define BIT_LIGHT_READY (1 << 2)
 
 MessageBufferHandle_t downLinkMessageBufferHandle = NULL;
 
@@ -51,12 +54,13 @@ void create_tasks_and_semaphores(void)
 	
 	createTasksForSensors();
 	DownLinkHandler_Create(3, downLinkMessageBufferHandle);
-	lora_handler_initialize(2, temperature_sensor, co2_sensor, xMutexSemaphore);	
+	lora_handler_initialize(2, temperature_sensor, co2_sensor, xMutexSemaphore, lighthandler);	
 }
 
 void createTasksForSensors(){
 	temperature_sensor = createTemp(3, taskReadyBits, BIT_TEMP_READY, xMutexSemaphore);
 	co2_sensor = createCO2(3, taskReadyBits, BIT_CO2_READY, xMutexSemaphore);
+	lighthandler = createLightSensor(3, taskReadyBits, BIT_LIGHT_READY, xMutexSemaphore);
 }
 
 void initializeSystem(){

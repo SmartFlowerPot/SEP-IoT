@@ -6,6 +6,8 @@ CO2Handler.c
 
 DownlinkHandler.c
 
+LightHandler.c
+
 TemperatureHandler.c
 
 UplinkHandler.c

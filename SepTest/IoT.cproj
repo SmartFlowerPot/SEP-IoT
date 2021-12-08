@@ -221,6 +221,12 @@
     <Compile Include="drivers\twi.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="LightHandler.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="LightHandler.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="TemperatureHandler.c">
       <SubType>compile</SubType>
     </Compile>

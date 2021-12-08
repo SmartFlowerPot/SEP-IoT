@@ -8,6 +8,7 @@
 #include <lora_driver.h>
 #include "TemperatureHandler.h"
 #include "CO2Handler.h"
+#include "LightHandler.h"
 #include <math.h>
 #include <stdio.h>
 
@@ -16,16 +17,18 @@
 
 Temperature_t temperatureAndHumidity;
 CO2_t co2;
+LightHandler_t light_handler;
 static lora_driver_payload_t _uplink_payload;
 SemaphoreHandle_t xMutexSemaphore;
 
 void lora_handler_task(void* pvParameters);
 
-void lora_handler_initialize(uint16_t lora_handler_task_priority, Temperature_t temperatureObject, CO2_t co2Object, SemaphoreHandle_t mutex){
+void lora_handler_initialize(uint16_t lora_handler_task_priority, Temperature_t temperatureObject, CO2_t co2Object, SemaphoreHandle_t mutex, LightHandler_t lightObject){
 	
 	temperatureAndHumidity = temperatureObject;
 	co2 = co2Object;
 	xMutexSemaphore = mutex;
+	light_handler = lightObject;
 	xTaskCreate(
 	lora_handler_task
 	, "LoRaWAN Hand"
@@ -137,11 +140,13 @@ void lora_handler_task(void* pvParameters){
 		double temp = 0.0;
 		uint16_t humidity = 0;
 		uint16_t co2_val = 0;
+		uint16_t light_val = 0;
 		if(xMutexSemaphore != NULL){
 			if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 10) == pdTRUE){
 				temp = (double) getTemperature(temperatureAndHumidity);
 				humidity = getHumidity(temperatureAndHumidity)/10;
 				co2_val = getCO2(co2);
+				light_val = getLight(light_handler);
 				xSemaphoreGive(xMutexSemaphore);
 			}
 			else{
@@ -166,7 +171,11 @@ void lora_handler_task(void* pvParameters){
 		printf("\nco2: %d", co2_val);
 		_uplink_payload.bytes[3] = co2_val >> 8;
 		_uplink_payload.bytes[4] = co2_val & 0xFF;
-	
+		
+		//light 
+	    printf("\n light in lux: %d", light_val);
+		_uplink_payload.bytes[5] = light_val >> 8;
+		_uplink_payload.bytes[6] = light_val & 0xFF;
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
 	}
 	
