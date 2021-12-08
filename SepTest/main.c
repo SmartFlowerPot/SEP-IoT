@@ -59,8 +59,9 @@ void create_tasks_and_semaphores(void)
 
 void createTasksForSensors(){
 	temperature_sensor = createTemp(3, taskReadyBits, BIT_TEMP_READY, xMutexSemaphore);
+	lighthandler = createLightSensor(4, taskReadyBits, BIT_LIGHT_READY, xMutexSemaphore);
 	co2_sensor = createCO2(3, taskReadyBits, BIT_CO2_READY, xMutexSemaphore);
-	lighthandler = createLightSensor(3, taskReadyBits, BIT_LIGHT_READY, xMutexSemaphore);
+	
 }
 
 void initializeSystem(){
