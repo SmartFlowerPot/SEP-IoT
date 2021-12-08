@@ -54,7 +54,7 @@ LightHandler_t createLightSensor(uint16_t priority, EventGroupHandle_t eventBits
 
 void createLightTask(uint16_t priority, LightHandler_t self){
 	xEventGroupSetBits(group_start, ready_bit);
-	xTaskCreate(startReadingLight, "Light task", configMINIMAL_STACK_SIZE,(void *) self, priority, NULL);
+	xTaskCreate(startReadingLight, "Light task", configMINIMAL_STACK_SIZE,(void*) self, priority, NULL);
 }
 
 void startReadingLight(void* self){
@@ -65,16 +65,17 @@ void startReadingLight(void* self){
 	for(;;){
 		xTaskDelayUntil(&xLastWakeTime, xFrequency);
 		
-		EventBits_t readyBits = xEventGroupWaitBits(group_start,
-		ready_bit,
-		pdFALSE,
-		pdTRUE,
-		portMAX_DELAY);
-		
 		measure_light((LightHandler_t) self);
+	}
 }
 
 void measure_light(LightHandler_t self){
+	
+	EventBits_t readyBits = xEventGroupWaitBits(group_start,
+	ready_bit,
+	pdFALSE,
+	pdTRUE,
+	portMAX_DELAY);
 	
 	if ( TSL2591_OK != tsl2591_fetchData() )
 	{
@@ -84,7 +85,7 @@ void measure_light(LightHandler_t self){
 	else
 	{
 		//The light data will be ready after the driver calls the call back function with
-		tsl2591Callback(TSL2591_DATA_READY, (LightHandler_t) self);
+		tsl2591Callback(TSL2591_DATA_READY, self);
 	}
 }
 
@@ -128,7 +129,7 @@ void tsl2591Callback(tsl2591_returnCode_t rc, LightHandler_t self)
 		
 		if ( TSL2591_OK == (rc = tsl2591_getLux(&_lux)) )
 		{
-			self->lux = (uint16_t) _lux;
+			self->lux = _lux;
 			printf("Lux: %5.4f\n", _lux);
 		}
 		else if( TSL2591_OVERFLOW == rc )
