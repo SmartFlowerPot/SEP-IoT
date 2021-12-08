@@ -123,7 +123,7 @@ void lora_handler_task(void* pvParameters){
 	_lora_setup();
 	
 	TickType_t xLastWakeTime;
-	const TickType_t xFrequency = pdMS_TO_TICKS(10000UL); // Upload message every 5 minutes (300000 ms)
+	const TickType_t xFrequency = pdMS_TO_TICKS(30000UL); // Upload message every 5 minutes (300000 ms)
 	xLastWakeTime = xTaskGetTickCount();
 	
 	
@@ -132,7 +132,7 @@ void lora_handler_task(void* pvParameters){
 		_uplink_payload.len = 5;
 		_uplink_payload.portNo = 1;
 		
-		lora_driver_payload_t downlinkPayload;
+		//lora_driver_payload_t downlinkPayload;
 		
 		double temp = 0.0;
 		uint16_t humidity = 0;
@@ -159,17 +159,14 @@ void lora_handler_task(void* pvParameters){
 		_uplink_payload.bytes[1] = (int) val2;	
 		
 		//humidity
-		
 		printf("\nhumidity: %d", humidity);
 		_uplink_payload.bytes[2] = humidity;
 		
 		//co2
-		
 		printf("\nco2: %d", co2_val);
-		_uplink_payload.bytes[3] = co2_val>>8;
-		_uplink_payload.bytes[4] = co2_val&0xFF;
-		
-		
+		_uplink_payload.bytes[3] = co2_val >> 8;
+		_uplink_payload.bytes[4] = co2_val & 0xFF;
+	
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
 	}
 	

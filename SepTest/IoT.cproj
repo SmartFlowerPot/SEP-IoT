@@ -167,6 +167,12 @@
     <Compile Include="CO2Handler.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="DownlinkHandler.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DownlinkHandler.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="drivers\display_7seg.h">
       <SubType>compile</SubType>
     </Compile>

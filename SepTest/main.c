@@ -17,6 +17,8 @@
 #include "event_groups.h"
 
 #include "UplinkHandler.h"
+#include "DownlinkHandler.h"
+#include <message_buffer.h>
 
 
 // define semaphore handle
@@ -30,6 +32,7 @@ EventGroupHandle_t taskReadyBits = NULL;
 #define BIT_TEMP_READY (1 << 0)
 #define BIT_CO2_READY (1 << 1)
 
+MessageBufferHandle_t downLinkMessageBufferHandle = NULL;
 
 void create_tasks_and_semaphores(void)
 {
@@ -47,7 +50,8 @@ void create_tasks_and_semaphores(void)
 	
 	
 	createTasksForSensors();
-	lora_handler_initialize(4, temperature_sensor, co2_sensor, xMutexSemaphore);
+	DownLinkHandler_Create(3, downLinkMessageBufferHandle);
+	lora_handler_initialize(2, temperature_sensor, co2_sensor, xMutexSemaphore);	
 }
 
 void createTasksForSensors(){
@@ -62,7 +66,8 @@ void initializeSystem(){
 	// Make it possible to use stdio on COM port 3 (USB) on Arduino board - Setting 57600,8,N,1
 	stdio_initialise(ser_USART0);
 	// Method for tasks and semaphore
-	lora_driver_initialise(ser_USART1, NULL);
+	downLinkMessageBufferHandle = xMessageBufferCreate(sizeof(lora_driver_payload_t)*1);
+	lora_driver_initialise(ser_USART1, downLinkMessageBufferHandle);
 	create_tasks_and_semaphores();
 }
 
