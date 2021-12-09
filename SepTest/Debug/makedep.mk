@@ -8,6 +8,10 @@ DownlinkHandler.c
 
 LightHandler.c
 
+SharedPrintf.c
+
+SharedSensorData.c
+
 TemperatureHandler.c
 
 UplinkHandler.c

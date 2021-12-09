@@ -9,6 +9,7 @@
 #include <semphr.h>
 
 #include "TemperatureHandler.h"
+#include "SharedSensorData.h"
 
 EventGroupHandle_t group_start;
 EventBits_t ready_bit;
@@ -70,15 +71,7 @@ void startReading(void* self){
 }
 
 void measureTempAndHum(Temperature_t self){
-	if(xMutexSemaphore != NULL){
-		if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 10) == pdTRUE){
-			self->temperature = hih8120_getTemperature();
-			self->humidity = hih8120_getHumidityPercent_x10();
-			xSemaphoreGive(xMutexSemaphore);
-		}else{
-			printf("The mutex could not be obtained.");
-		}
-	}
+	set_temp_hum_val();
 }
 
 void temperature_handler_init(Temperature_t self, uint16_t priority){
@@ -92,4 +85,9 @@ float getTemperature(Temperature_t self){
 
 uint16_t getHumidity(Temperature_t self){
 	return self -> humidity;
+}
+
+void set_values(Temperature_t self){
+	self->temperature = hih8120_getTemperature();
+	self->humidity = hih8120_getHumidityPercent_x10()/10;
 }

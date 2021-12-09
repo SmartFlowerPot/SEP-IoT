@@ -1,6 +1,4 @@
-UplinkHandler.d UplinkHandler.o: .././UplinkHandler.c \
- ../drivers/lora_driver.h \
- c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdbool.h \
+SharedSensorData.d SharedSensorData.o: .././SharedSensorData.c \
  ../FreeRTOS/src/ATMEGA_FreeRTOS.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stddef.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdint.h \
@@ -20,21 +18,12 @@ UplinkHandler.d UplinkHandler.o: .././UplinkHandler.c \
  ../FreeRTOS/src/FreeRTOSVariant.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\wdt.h \
  ../FreeRTOS/src/ATMEGA_FreeRTOS.h ../FreeRTOS/src/task.h \
- ../FreeRTOS/src/list.h ../FreeRTOS/src/message_buffer.h \
- ../FreeRTOS/src/stream_buffer.h ../drivers/serial.h \
- .././TemperatureHandler.h \
+ ../FreeRTOS/src/list.h ../FreeRTOS/src/semphr.h ../FreeRTOS/src/queue.h \
+ .././SharedSensorData.h .././TemperatureHandler.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdio.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdarg.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
- ../FreeRTOS/src/semphr.h ../FreeRTOS/src/queue.h \
- ../FreeRTOS/src/event_groups.h ../FreeRTOS/src/timers.h \
- .././CO2Handler.h .././LightHandler.h .././SharedSensorData.h \
- .././SharedPrintf.h \
- c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h
-
-../drivers/lora_driver.h:
-
-c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdbool.h:
+ ../FreeRTOS/src/event_groups.h ../FreeRTOS/src/timers.h
 
 ../FreeRTOS/src/ATMEGA_FreeRTOS.h:
 
@@ -82,11 +71,11 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 
 ../FreeRTOS/src/list.h:
 
-../FreeRTOS/src/message_buffer.h:
+../FreeRTOS/src/semphr.h:
 
-../FreeRTOS/src/stream_buffer.h:
+../FreeRTOS/src/queue.h:
 
-../drivers/serial.h:
+.././SharedSensorData.h:
 
 .././TemperatureHandler.h:
 
@@ -96,20 +85,6 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h:
 
-../FreeRTOS/src/semphr.h:
-
-../FreeRTOS/src/queue.h:
-
 ../FreeRTOS/src/event_groups.h:
 
 ../FreeRTOS/src/timers.h:
-
-.././CO2Handler.h:
-
-.././LightHandler.h:
-
-.././SharedSensorData.h:
-
-.././SharedPrintf.h:
-
-c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h:

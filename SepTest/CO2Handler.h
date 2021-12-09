@@ -1,6 +1,6 @@
 /*
- * CO2Handler.h
- *  Author: IoT Team (Bogdan, Gosia, Claudiu)
+* CO2Handler.h
+* Author: IoT Team (Bogdan, Gosia, Claudiu)
 */
 
 

@@ -13,6 +13,8 @@ main.d main.o: .././main.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\version.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\fuse.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h \
+ ../drivers/tsl2591.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdbool.h \
  ../FreeRTOS/src/ATMEGA_FreeRTOS.h ../FreeRTOS/src/FreeRTOSConfig.h \
  ../FreeRTOS/src/projdefs.h ../FreeRTOS/src/portable.h \
  ../FreeRTOS/src/portmacro.h ../FreeRTOS/src/mpu_wrappers.h \
@@ -20,15 +22,15 @@ main.d main.o: .././main.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\wdt.h \
  ../FreeRTOS/src/ATMEGA_FreeRTOS.h ../FreeRTOS/src/task.h \
  ../FreeRTOS/src/list.h ../FreeRTOS/src/task.h ../FreeRTOS/src/semphr.h \
- ../FreeRTOS/src/queue.h ../drivers/stdio_driver.h \
- c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdbool.h \
- ../drivers/serial.h ../drivers/lora_driver.h \
- ../FreeRTOS/src/message_buffer.h ../FreeRTOS/src/stream_buffer.h \
- ../drivers/status_leds.h .././TemperatureHandler.h \
+ ../FreeRTOS/src/queue.h ../drivers/stdio_driver.h ../drivers/serial.h \
+ ../drivers/lora_driver.h ../FreeRTOS/src/message_buffer.h \
+ ../FreeRTOS/src/stream_buffer.h ../drivers/status_leds.h \
+ .././TemperatureHandler.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
  ../FreeRTOS/src/event_groups.h ../FreeRTOS/src/timers.h \
- .././CO2Handler.h .././LightHandler.h .././UplinkHandler.h \
- .././DownlinkHandler.h
+ .././CO2Handler.h .././LightHandler.h .././SharedSensorData.h \
+ .././UplinkHandler.h .././DownlinkHandler.h .././SharedPrintf.h \
+ ../drivers/rc_servo.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdio.h:
 
@@ -57,6 +59,10 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\fuse.h:
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h:
+
+../drivers/tsl2591.h:
+
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdbool.h:
 
 ../FreeRTOS/src/ATMEGA_FreeRTOS.h:
 
@@ -88,8 +94,6 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 
 ../drivers/stdio_driver.h:
 
-c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdbool.h:
-
 ../drivers/serial.h:
 
 ../drivers/lora_driver.h:
@@ -112,6 +116,12 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 
 .././LightHandler.h:
 
+.././SharedSensorData.h:
+
 .././UplinkHandler.h:
 
 .././DownlinkHandler.h:
+
+.././SharedPrintf.h:
+
+../drivers/rc_servo.h:

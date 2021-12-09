@@ -1,14 +1,16 @@
 /*
- * CFile1.c
- *
- * Created: 11-Nov-21 9:28:17 AM
- *  Author: cirst and Gosia
- */ 
+* CFile1.c
+*
+* Created: 11-Nov-21 9:28:17 AM
+*  Author: cirst and Gosia
+*/
 
 #include <lora_driver.h>
 #include "TemperatureHandler.h"
 #include "CO2Handler.h"
 #include "LightHandler.h"
+#include "SharedSensorData.h"
+#include "SharedPrintf.h"
 #include <math.h>
 #include <stdio.h>
 
@@ -132,7 +134,7 @@ void lora_handler_task(void* pvParameters){
 	
 	for(;;){
 		xTaskDelayUntil(&xLastWakeTime, xFrequency);
-		_uplink_payload.len = 5;
+		_uplink_payload.len = 7;
 		_uplink_payload.portNo = 1;
 		
 		//lora_driver_payload_t downlinkPayload;
@@ -150,10 +152,13 @@ void lora_handler_task(void* pvParameters){
 				xSemaphoreGive(xMutexSemaphore);
 			}
 			else{
-			   printf("The mutex could not be obtained.");
+				printf("The mutex could not be obtained.");
 			}
 		}
-			
+		
+		uint16_t test = get_humidity_val();
+		print_sharedf("Humidity value maybe %d", test);
+		//printf("Humidity value maybe %d", test);
 		//temperature
 		double val1=0;
 		double val2=0;
@@ -161,7 +166,7 @@ void lora_handler_task(void* pvParameters){
 		val2 = val2 * 100;
 		printf("\ntemp: %f", temp);
 		_uplink_payload.bytes[0] = (int) val1;
-		_uplink_payload.bytes[1] = (int) val2;	
+		_uplink_payload.bytes[1] = (int) val2;
 		
 		//humidity
 		printf("\nhumidity: %d", humidity);
@@ -172,8 +177,8 @@ void lora_handler_task(void* pvParameters){
 		_uplink_payload.bytes[3] = co2_val >> 8;
 		_uplink_payload.bytes[4] = co2_val & 0xFF;
 		
-		//light 
-	    printf("\n light in lux: %d", light_val);
+		//light
+		printf("\n light in lux: %d", light_val);
 		_uplink_payload.bytes[5] = light_val >> 8;
 		_uplink_payload.bytes[6] = light_val & 0xFF;
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));

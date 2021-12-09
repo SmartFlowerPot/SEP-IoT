@@ -227,6 +227,18 @@
     <Compile Include="LightHandler.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="SharedPrintf.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="SharedPrintf.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="SharedSensorData.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="SharedSensorData.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="TemperatureHandler.c">
       <SubType>compile</SubType>
     </Compile>
@@ -239,6 +251,9 @@
     <Compile Include="UplinkHandler.h">
       <SubType>compile</SubType>
     </Compile>
+    <None Include=".git">
+      <SubType>compile</SubType>
+    </None>
     <None Include="FreeRTOS\Example\main.c">
       <SubType>compile</SubType>
     </None>
@@ -373,9 +388,6 @@
       <SubType>compile</SubType>
     </None>
     <None Include="drivers\README.md">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="FreeRTOS\.git">
       <SubType>compile</SubType>
     </None>
     <None Include="FreeRTOS\.gitignore">
