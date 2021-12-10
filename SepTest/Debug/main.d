@@ -24,13 +24,13 @@ main.d main.o: .././main.c \
  ../FreeRTOS/src/list.h ../FreeRTOS/src/task.h ../FreeRTOS/src/semphr.h \
  ../FreeRTOS/src/queue.h ../drivers/stdio_driver.h ../drivers/serial.h \
  ../drivers/lora_driver.h ../FreeRTOS/src/message_buffer.h \
- ../FreeRTOS/src/stream_buffer.h ../drivers/status_leds.h \
+ ../FreeRTOS/src/stream_buffer.h ../drivers/rc_servo.h \
  .././TemperatureHandler.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
  ../FreeRTOS/src/event_groups.h ../FreeRTOS/src/timers.h \
  .././CO2Handler.h .././LightHandler.h .././SharedSensorData.h \
- .././UplinkHandler.h .././DownlinkHandler.h .././SharedPrintf.h \
- ../drivers/rc_servo.h
+ .././UplinkHandler.h .././DownlinkHandler.h ../drivers/status_leds.h \
+ .././SharedPrintf.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdio.h:
 
@@ -102,7 +102,7 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 
 ../FreeRTOS/src/stream_buffer.h:
 
-../drivers/status_leds.h:
+../drivers/rc_servo.h:
 
 .././TemperatureHandler.h:
 
@@ -122,6 +122,6 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 
 .././DownlinkHandler.h:
 
-.././SharedPrintf.h:
+../drivers/status_leds.h:
 
-../drivers/rc_servo.h:
+.././SharedPrintf.h:

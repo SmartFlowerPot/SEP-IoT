@@ -14,6 +14,7 @@
 #include "SharedPrintf.h"
 #include <math.h>
 #include <stdio.h>
+#include "message_buffer.h"
 #include <rc_servo.h>
 
 #define LORA_appEUI "9276B3CF3B069355"
@@ -23,16 +24,12 @@ Temperature_t temperatureAndHumidity;
 CO2_t co2;
 LightHandler_t light_handler;
 static lora_driver_payload_t _uplink_payload;
-MessageBufferHandle_t downlinkBuffer;
+
 
 void lora_handler_task(void* pvParameters);
 
-void lora_handler_initialize(uint16_t lora_handler_task_priority, MessageBufferHandle_t downLinkMessageBufferHandle){
+void lora_handler_initialize(uint16_t lora_handler_task_priority){
 	
-	//temperatureAndHumidity = temperatureObject;
-	//co2 = co2Object;
-	//light_handler = lightObject;
-	downlinkBuffer = downLinkMessageBufferHandle;
 	xTaskCreate(
 	lora_handler_task
 	, "LoRaWAN Hand"
@@ -162,11 +159,6 @@ void lora_handler_task(void* pvParameters){
 		
 		print_sharedf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
 		
-		//lora_driver_payload_t downlinkPayload;
-		//xMessageBufferReceive(downlinkBuffer, &downlinkPayload, sizeof(lora_driver_payload_t), portMAX_DELAY);
-		//print_sharedf("DOWN LINK: from port: %d with %d bytes received!", downlinkPayload.portNo, downlinkPayload.len);
-		//if (1 == downlinkPayload.len){
-		//}
 	}
 	
 }

@@ -4,4 +4,4 @@
  */ 
 #include <semphr.h>
 
-void lora_handler_initialize(uint16_t lora_handler_task_priority, MessageBufferHandle_t downLinkMessageBufferHandle );
+void lora_handler_initialize(uint16_t lora_handler_task_priority);

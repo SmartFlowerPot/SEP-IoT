@@ -43,7 +43,7 @@ void create_tasks_and_semaphores(void)
 	createTasksForSensors();
 	create_semaphore_mutex_and_sensors(temperature_sensor, co2_sensor, lighthandler);
 	DownLinkHandler_Create(4, downLinkMessageBufferHandle);
-	lora_handler_initialize(2, downLinkMessageBufferHandle);
+	lora_handler_initialize(2);
 }
 
 void initializeSystem(){
@@ -53,10 +53,9 @@ void initializeSystem(){
 	// Make it possible to use stdio on COM port 3 (USB) on Arduino board - Setting 57600,8,N,1
 	stdio_initialise(ser_USART0);
 	
-	
 	rc_servo_initialise();
 	// Method for tasks and semaphore
-	downLinkMessageBufferHandle = xMessageBufferCreate(sizeof(lora_driver_payload_t)*1);
+	downLinkMessageBufferHandle = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
 	lora_driver_initialise(ser_USART1, downLinkMessageBufferHandle);
 	create_tasks_and_semaphores();
 }

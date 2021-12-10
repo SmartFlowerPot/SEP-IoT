@@ -14,8 +14,6 @@ static lora_driver_payload_t downlinkPayload;
 void lora_downlink_handler_task(void* messageBuffer);
 
 void DownLinkHandler_Create(uint16_t lora_handler_task_priority, MessageBufferHandle_t downLinkMessageBuffer){
-	
-	printf("downlink 1");
 	xTaskCreate(
 	lora_downlink_handler_task
 	, "LoRaWAN Handler Down link"
@@ -28,15 +26,17 @@ void DownLinkHandler_Create(uint16_t lora_handler_task_priority, MessageBufferHa
 
 void lora_DownLinkHandler_StartTask(MessageBufferHandle_t downLinkMessageBuffer){
 	
-	printf("downlink 2");
-
-	//rc_servo_setPosition(1,-100);
-	
 	xMessageBufferReceive(downLinkMessageBuffer, &downlinkPayload, sizeof(lora_driver_payload_t), portMAX_DELAY);
 	printf("DOWN LINK: from port: %d with %d bytes received!", downlinkPayload.portNo, downlinkPayload.len);
 	if (1 == downlinkPayload.len){
+		if(downlinkPayload.bytes[0] == 1){
+			rc_servo_setPosition(1,-100); // fully open 
+		}
+		else{
+			rc_servo_setPosition(1, 100); // 
+		}
+		
 	}
-	
 	
 }
 
