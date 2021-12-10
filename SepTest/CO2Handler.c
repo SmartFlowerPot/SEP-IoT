@@ -1,15 +1,17 @@
 /*
 * CO2Handler.c
+* This class is to be used for handling reading sensor data from the CO2 sensor.
+* It creates a task that reads periodically all of the data, and makes use of the SharedSensorData.c file to protected the values.
+*
 * Author: IoT Team (Bogdan, Gosia, Claudiu)
 */
-
-
 #include <stdint.h>
 #include <stdio.h>
 #include <ATMEGA_FreeRTOS.h>
 #include <task.h>
 #include <semphr.h>
 #include <mh_z19.h>
+
 #include "CO2Handler.h"
 #include "SharedPrintf.h"
 #include "SharedSensorData.h"
@@ -112,8 +114,8 @@ void startReadingCO2(void* self) {
 				// Something went wrong
 				} else {
 				set_co2_mutex();
-				}
 			}
+		}
 		
 	}
 }

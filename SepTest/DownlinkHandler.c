@@ -8,8 +8,6 @@
 #include <message_buffer.h>
 #include <rc_servo.h>
 
-
-
 //uint16_t openWindow;
 static lora_driver_payload_t downlinkPayload;
 

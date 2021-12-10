@@ -4,28 +4,20 @@
 #include <ATMEGA_FreeRTOS.h>
 #include <task.h>
 #include <semphr.h>
-
 #include <stdio_driver.h>
 #include <serial.h>
-
-// Needed for LoRaWAN
 #include <lora_driver.h>
-#include <status_leds.h>
+#include <message_buffer.h>
+#include <rc_servo.h>
 
 #include "TemperatureHandler.h"
 #include "CO2Handler.h"
 #include "LightHandler.h"
 #include "event_groups.h"
-
 #include "SharedSensorData.h"
 #include "UplinkHandler.h"
 #include "DownlinkHandler.h"
-#include <message_buffer.h>
-
-//Shared print
 #include "SharedPrintf.h"
-
-#include <rc_servo.h>
 
 EventGroupHandle_t taskReadyBits = NULL;
 MessageBufferHandle_t downLinkMessageBufferHandle = NULL;
@@ -38,7 +30,6 @@ CO2_t co2_sensor;
 #define BIT_CO2_READY (1 << 1)
 #define BIT_LIGHT_READY (1 << 2)
 
-
 void createTasksForSensors(){
 	temperature_sensor = createTemp(3, taskReadyBits, BIT_TEMP_READY);
 	co2_sensor = createCO2(3, taskReadyBits, BIT_CO2_READY);
@@ -48,10 +39,11 @@ void createTasksForSensors(){
 void create_tasks_and_semaphores(void)
 {
 	create_shared_printf();
+	print_sharedf("Board started.");
 	createTasksForSensors();
 	create_semaphore_mutex_and_sensors(temperature_sensor, co2_sensor, lighthandler);
 	DownLinkHandler_Create(4, downLinkMessageBufferHandle);
-	lora_handler_initialize(2, downLinkMessageBufferHandle);	
+	lora_handler_initialize(2, downLinkMessageBufferHandle);
 }
 
 void initializeSystem(){

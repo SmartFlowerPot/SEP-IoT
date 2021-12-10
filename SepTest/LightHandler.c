@@ -1,5 +1,8 @@
 /*
 * LightHandler.c
+* This class is to be used for handling reading sensor data from the Light sensor.
+* It creates a task that reads periodically all of the data, and makes use of the SharedSensorData.c file to protected the values.
+*
 * Author: IoT Team (Bogdan, Gosia, Claudiu)
 */
 
@@ -56,6 +59,7 @@ void tsl2591Callback(tsl2591_returnCode_t rc, LightHandler_t self)
 		if ( TSL2591_OK == (rc = tsl2591_getLux(&_lux)) )
 		{
 			lux_val = _lux;
+			//setting data using the shared sensor data c file
 			set_light_mutex();
 			print_sharedf("Lux: %5.4f\n", _lux);
 		}
@@ -93,11 +97,13 @@ LightHandler_t createLightSensor(UBaseType_t light_priority, EventGroupHandle_t 
 	ready_bit = bits;
 	group_start = eventBits;
 	
+	//initialize sensor with the callback function
 	if ( TSL2591_OK == tsl2591_initialise(tsl2591Callback))
 	{
-		puts("Light sensor initialized"); //switch
+		print_sharedf("Light sensor initialized");
 	}
 	
+	//enable sensor
 	if ( TSL2591_OK != tsl2591_enable() )
 	{
 		//some error handling here
@@ -106,14 +112,17 @@ LightHandler_t createLightSensor(UBaseType_t light_priority, EventGroupHandle_t 
 	return new_measure;
 }
 
-
+//method for measuring
 void measure_light(LightHandler_t self){
 	
+	//set bits
 	EventBits_t readyBits = xEventGroupWaitBits(group_start,
 	ready_bit,
 	pdFALSE,
 	pdTRUE,
 	portMAX_DELAY);
+	
+	//check if all bits are set
 	if ((readyBits & (ready_bit)) == (ready_bit)) {
 		if ( TSL2591_OK != tsl2591_fetchData() )
 		{
@@ -128,12 +137,14 @@ void measure_light(LightHandler_t self){
 	}
 }
 
+//reading task for sensors
 void startReadingLight(void* self){
 	TickType_t xLastWakeTime;
 	const TickType_t xFrequency = pdMS_TO_TICKS(15000UL);
 	xLastWakeTime = xTaskGetTickCount();
 	
 	for(;;){
+		//wait 15 seconds to read
 		xTaskDelayUntil(&xLastWakeTime, xFrequency);
 		measure_light((LightHandler_t) self);
 	}
