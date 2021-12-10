@@ -112,7 +112,9 @@ LightHandler_t createLightSensor(UBaseType_t light_priority, EventGroupHandle_t 
 	return new_measure;
 }
 
-//method for measuring
+/*
+* Function used for measuring
+*/
 void measure_light(LightHandler_t self){
 	
 	//set bits
@@ -137,7 +139,9 @@ void measure_light(LightHandler_t self){
 	}
 }
 
-//reading task for sensors
+/*
+* Reading task for sensor
+*/
 void startReadingLight(void* self){
 	TickType_t xLastWakeTime;
 	const TickType_t xFrequency = pdMS_TO_TICKS(15000UL);
@@ -150,11 +154,18 @@ void startReadingLight(void* self){
 	}
 }
 
-
+/*
+* Simple getter for the light level
+*/
 uint16_t getLight(LightHandler_t self){
 	return self->lux;
 }
 
+/*
+* Simple setter for the light level
+*/
 void setLight(LightHandler_t self){
-	self->lux = lux_val;
+	//needed to avoid problem values
+	if(self->lux != 0)
+		self->lux = lux_val;
 }

@@ -89,7 +89,10 @@ uint16_t getCO2(CO2_t self){
 }
 
 void set_co2(CO2_t self){
-	((CO2_t)self)->CO2 = ppm;
+	//needed to avoid problem values
+	if(((CO2_t)self)->CO2 != 0){
+		((CO2_t)self)->CO2 = ppm;
+	}
 }
 
 /*

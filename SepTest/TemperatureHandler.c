@@ -78,7 +78,7 @@ void startReading(void* self){
 		//wake-up sensor
 		if (HIH8120_OK != hih8120_wakeup())
 		{
-			puts("Temp task failed to work!");
+			print_sharedf("Temp task failed to work!");
 		}
 		
 		//set bits
@@ -118,6 +118,9 @@ uint16_t getHumidity(Temperature_t self){
 * setter for both temperature and humidity
 */
 void temp_hum_set(Temperature_t self){
-	self->temperature = hih8120_getTemperature();
-	self->humidity = hih8120_getHumidityPercent_x10()/10;
+	//needed to avoid problem values
+	if(hih8120_getTemperature() != 0)
+		self->temperature = hih8120_getTemperature();
+	if(hih8120_getHumidityPercent_x10() != 0)
+		self->humidity = hih8120_getHumidityPercent_x10()/10;
 }

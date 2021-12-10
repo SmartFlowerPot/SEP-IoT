@@ -2,7 +2,7 @@
 /*
 * SharedSensorData.c
 * This class is to be used for setting and getting any sensor data necessary. 
-* Each method or call is protected by the mutex semaphore by default, without need for external intervention.
+* Each function or call is protected by the mutex semaphore by default, without need for external intervention.
 *
 * Created: 12/9/2021 12:08:32 PM
 * Author: Gosia
@@ -22,7 +22,7 @@ LightHandler_t light;
 SemaphoreHandle_t xMutexSemaphore;
 
 /*
-* Method used to initialize pointers to the necessary structs and initializing the mutex for the shared data
+* Function used to initialize pointers to the necessary structs and initializing the mutex for the shared data
 */
 void create_semaphore_mutex_and_sensors(Temperature_t temperatureObject, CO2_t co2Object, LightHandler_t lightObject){
 	if (xMutexSemaphore == NULL){
@@ -35,7 +35,7 @@ void create_semaphore_mutex_and_sensors(Temperature_t temperatureObject, CO2_t c
 }
 
 /*
-* Method used to set the temperature and humidity, protected by the mutex 
+* Function used to set the temperature and humidity, protected by the mutex 
 */
 void set_temp_hum_mutex(){
 	

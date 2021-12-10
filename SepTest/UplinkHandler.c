@@ -28,6 +28,9 @@ static lora_driver_payload_t _uplink_payload;
 
 void lora_handler_task(void* pvParameters);
 
+/*
+* Function call used to start the networking task
+*/
 void lora_handler_initialize(uint16_t lora_handler_task_priority){
 	
 	xTaskCreate(
@@ -39,7 +42,9 @@ void lora_handler_initialize(uint16_t lora_handler_task_priority){
 	, NULL);
 }
 
-
+/*
+* Setup function that initializes the LoRaWAN Parameters
+*/
 static void _lora_setup(void)
 {
 	char _out_buf[20];
@@ -105,6 +110,9 @@ static void _lora_setup(void)
 	}
 }
 
+/*
+* Function task that stars sending data in the specified 5 minute interval
+*/
 void lora_handler_task(void* pvParameters){
 	
 	// Hardware reset of LoRaWAN transceiver

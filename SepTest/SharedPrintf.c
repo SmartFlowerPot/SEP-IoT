@@ -34,7 +34,9 @@ void print_sharedf(char* format, ...){
 	va_list lst;
 	if (xSemaphoreTake(xMutexPrint, (TickType_t) 300) == pdTRUE) {
 		va_start(lst, format);
+		//needs testing
 		vprintf(format, lst);
+		vprintf("/n");
 		xSemaphoreGive(xMutexPrint);
 	}
 	else {}

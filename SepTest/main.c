@@ -26,16 +26,25 @@ Temperature_t temperature_sensor;
 LightHandler_t lighthandler;
 CO2_t co2_sensor;
 
+/*
+* Event bits
+*/
 #define BIT_TEMP_READY (1 << 0)
 #define BIT_CO2_READY (1 << 1)
 #define BIT_LIGHT_READY (1 << 2)
 
+/*
+* Function call to initialize all sensors
+*/
 void createTasksForSensors(){
 	temperature_sensor = createTemp(3, taskReadyBits, BIT_TEMP_READY);
 	co2_sensor = createCO2(3, taskReadyBits, BIT_CO2_READY);
 	lighthandler = createLightSensor(3, taskReadyBits, BIT_LIGHT_READY);
 }
 
+/*
+* Function call that initializes all needed tasks for sensors and shared print, as well as LoRaWAN uplink
+*/
 void create_tasks_and_semaphores(void)
 {
 	create_shared_printf();
@@ -46,6 +55,9 @@ void create_tasks_and_semaphores(void)
 	lora_handler_initialize(2);
 }
 
+/*
+* Function call that initializes the Event groups, the Arduino board, Downlink message buffer, tasks, and Sempahore mutex
+*/
 void initializeSystem(){
 	// initialize ready bits
 	taskReadyBits = xEventGroupCreate();
