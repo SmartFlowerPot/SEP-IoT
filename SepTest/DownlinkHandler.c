@@ -33,7 +33,7 @@ void DownLinkHandler_Create(uint16_t lora_handler_task_priority, MessageBufferHa
 void lora_DownLinkHandler_StartTask(MessageBufferHandle_t downLinkMessageBuffer){
 	
 	xMessageBufferReceive(downLinkMessageBuffer, &downlinkPayload, sizeof(lora_driver_payload_t), portMAX_DELAY);
-	printf("DOWN LINK: from port: %d with %d bytes received!", downlinkPayload.portNo, downlinkPayload.len);
+	print_sharedf("DOWN LINK: from port: %d with %d bytes received!", downlinkPayload.portNo, downlinkPayload.len);
 	if (1 == downlinkPayload.len){
 		if(downlinkPayload.bytes[0] == 1){
 			rc_servo_setPosition(1,-100); // fully open

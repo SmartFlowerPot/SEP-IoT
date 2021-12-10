@@ -79,7 +79,7 @@ static void _lora_setup(void)
 	
 	do {
 		rc = lora_driver_join(LORA_OTAA);
-		print_sharedf("Join Network TriesLeft:%d >%s<\n", maxJoinTriesLeft, lora_driver_mapReturnCodeToText(rc));
+		print_sharedf("Join Network TriesLeft:%d >%s<", maxJoinTriesLeft, lora_driver_mapReturnCodeToText(rc));
 
 		if ( rc != LORA_ACCEPTED)
 		{
@@ -147,25 +147,25 @@ void lora_handler_task(void* pvParameters){
 		val2 = val2 * 100;
 		
 		//temperature
-		print_sharedf("\ntemp: %f", temp);
+		print_sharedf("temp: %f", temp);
 		_uplink_payload.bytes[0] = (int) val1;
 		_uplink_payload.bytes[1] = (int) val2;
 		
 		//humidity
-		print_sharedf("\nhumidity: %d", humidity);
+		print_sharedf("humidity: %d", humidity);
 		_uplink_payload.bytes[2] = humidity;
 		
 		//co2
-		print_sharedf("\nco2: %d", co2_val);
+		print_sharedf("co2: %d", co2_val);
 		_uplink_payload.bytes[3] = co2_val >> 8;
 		_uplink_payload.bytes[4] = co2_val & 0xFF;
 		
 		//light
-		print_sharedf("\nlight in lux: %d", light_val);
+		print_sharedf("light in lux: %d", light_val);
 		_uplink_payload.bytes[5] = light_val >> 8;
 		_uplink_payload.bytes[6] = light_val & 0xFF;
 		
-		print_sharedf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
+		print_sharedf("Upload Message >%s<", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
 		
 	}
 	

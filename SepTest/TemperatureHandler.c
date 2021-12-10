@@ -50,7 +50,7 @@ Temperature_t createTemp(uint16_t priority, EventGroupHandle_t taskBits, EventBi
 	
 	if (HIH8120_OK == hih8120_initialise())
 	{
-		puts("Temp sensor initialized.");
+		print_sharedf("Temp sensor initialized.");
 	}
 	
 	temperature_handler_init(new_measure, priority);
