@@ -28,6 +28,20 @@ void DownLinkHandler_Create(uint16_t lora_handler_task_priority, MessageBufferHa
 }
 
 
+void lora_DownLinkHandler_StartTask(MessageBufferHandle_t downLinkMessageBuffer){
+	
+	printf("downlink 2");
+
+	//rc_servo_setPosition(1,-100);
+	
+	xMessageBufferReceive(downLinkMessageBuffer, &downlinkPayload, sizeof(lora_driver_payload_t), portMAX_DELAY);
+	printf("DOWN LINK: from port: %d with %d bytes received!", downlinkPayload.portNo, downlinkPayload.len);
+	if (1 == downlinkPayload.len){
+	}
+	
+	
+}
+
 
 void lora_downlink_handler_task(void* downLinkMessageBuffer){
 	for(;;){
@@ -35,23 +49,3 @@ void lora_downlink_handler_task(void* downLinkMessageBuffer){
 	}
 }
 
-
-void lora_DownLinkHandler_StartTask(MessageBufferHandle_t downLinkMessageBuffer){
-	
-	printf("downlink 2");
-	
-	rc_servo_setPosition(0,-100);
-	rc_servo_setPosition(0, 100);
-	rc_servo_setPosition(0,-100);
-	
-	printf("servo work");
-	xMessageBufferReceive(downLinkMessageBuffer, &downlinkPayload, sizeof(lora_driver_payload_t), portMAX_DELAY);
-	printf("DOWN LINK: from port: %d with %d bytes received!", downlinkPayload.portNo, downlinkPayload.len);
-	if (1 == downlinkPayload.len){
-		//openWindow = (downlinkPayload.bytes[0]);
-		//printf("down link %d", openWindow);
-	}
-	//} else {
-	//printf("downlink Timeout\n");
-	//	}
-}

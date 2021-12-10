@@ -30,7 +30,8 @@ UplinkHandler.d UplinkHandler.o: .././UplinkHandler.c \
  ../FreeRTOS/src/event_groups.h ../FreeRTOS/src/timers.h \
  .././CO2Handler.h .././LightHandler.h .././SharedSensorData.h \
  .././SharedPrintf.h \
- c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h \
+ ../drivers/rc_servo.h
 
 ../drivers/lora_driver.h:
 
@@ -113,3 +114,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 .././SharedPrintf.h:
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h:
+
+../drivers/rc_servo.h:

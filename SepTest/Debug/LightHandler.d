@@ -24,7 +24,9 @@ LightHandler.d LightHandler.o: .././LightHandler.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdbool.h \
  .././LightHandler.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
- ../FreeRTOS/src/event_groups.h ../FreeRTOS/src/timers.h
+ ../FreeRTOS/src/event_groups.h ../FreeRTOS/src/timers.h \
+ .././SharedSensorData.h .././TemperatureHandler.h .././CO2Handler.h \
+ .././SharedPrintf.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdint.h:
 
@@ -93,3 +95,11 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ../FreeRTOS/src/event_groups.h:
 
 ../FreeRTOS/src/timers.h:
+
+.././SharedSensorData.h:
+
+.././TemperatureHandler.h:
+
+.././CO2Handler.h:
+
+.././SharedPrintf.h:

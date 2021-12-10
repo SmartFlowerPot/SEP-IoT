@@ -13,6 +13,7 @@
 #include "SharedPrintf.h"
 #include <math.h>
 #include <stdio.h>
+#include <rc_servo.h>
 
 #define LORA_appEUI "9276B3CF3B069355"
 #define LORA_appKEY "84860CBA5C5116F9EC56E1B4346CA899"
@@ -21,16 +22,16 @@ Temperature_t temperatureAndHumidity;
 CO2_t co2;
 LightHandler_t light_handler;
 static lora_driver_payload_t _uplink_payload;
-SemaphoreHandle_t xMutexSemaphore;
+MessageBufferHandle_t downlinkBuffer;
 
 void lora_handler_task(void* pvParameters);
 
-void lora_handler_initialize(uint16_t lora_handler_task_priority, Temperature_t temperatureObject, CO2_t co2Object, SemaphoreHandle_t mutex, LightHandler_t lightObject){
+void lora_handler_initialize(uint16_t lora_handler_task_priority, MessageBufferHandle_t downLinkMessageBufferHandle){
 	
-	temperatureAndHumidity = temperatureObject;
-	co2 = co2Object;
-	xMutexSemaphore = mutex;
-	light_handler = lightObject;
+	//temperatureAndHumidity = temperatureObject;
+	//co2 = co2Object;
+	//light_handler = lightObject;
+	downlinkBuffer = downLinkMessageBufferHandle;
 	xTaskCreate(
 	lora_handler_task
 	, "LoRaWAN Hand"
@@ -133,33 +134,18 @@ void lora_handler_task(void* pvParameters){
 	
 	
 	for(;;){
+		
 		xTaskDelayUntil(&xLastWakeTime, xFrequency);
 		_uplink_payload.len = 7;
 		_uplink_payload.portNo = 1;
 		
-		//lora_driver_payload_t downlinkPayload;
 		
-		double temp = 0.0;
-		uint16_t humidity = 0;
-		uint16_t co2_val = 0;
-		uint16_t light_val = 0;
-		if(xMutexSemaphore != NULL){
-			if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 10) == pdTRUE){
-				temp = (double) getTemperature(temperatureAndHumidity);
-				humidity = getHumidity(temperatureAndHumidity)/10;
-				co2_val = getCO2(co2);
-				light_val = getLight(light_handler);
-				xSemaphoreGive(xMutexSemaphore);
-			}
-			else{
-				printf("The mutex could not be obtained.");
-			}
-		}
-		
-		uint16_t test = get_humidity_val();
-		print_sharedf("Humidity value maybe %d", test);
-		//printf("Humidity value maybe %d", test);
-		//temperature
+		double temp = (double) get_temp_val();
+		uint16_t humidity = get_humidity_val();
+		uint16_t co2_val = get_co2_mutex();
+		uint16_t light_val = get_light_mutex();
+				
+	
 		double val1=0;
 		double val2=0;
 		val2 = modf(temp, &val1);
@@ -178,10 +164,19 @@ void lora_handler_task(void* pvParameters){
 		_uplink_payload.bytes[4] = co2_val & 0xFF;
 		
 		//light
-		printf("\n light in lux: %d", light_val);
+		printf("\nlight in lux: %d", light_val);
 		_uplink_payload.bytes[5] = light_val >> 8;
 		_uplink_payload.bytes[6] = light_val & 0xFF;
+		
+	
+		
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
+		
+		lora_driver_payload_t downlinkPayload;
+		xMessageBufferReceive(downlinkBuffer, &downlinkPayload, sizeof(lora_driver_payload_t), portMAX_DELAY);
+		printf("DOWN LINK: from port: %d with %d bytes received!", downlinkPayload.portNo, downlinkPayload.len);
+		if (1 == downlinkPayload.len){
+		}
 	}
 	
 }

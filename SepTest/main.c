@@ -23,13 +23,10 @@
 #include <message_buffer.h>
 
 //Shared print
-#include "SharedPrintf.h";
+#include "SharedPrintf.h"
 
 #include <rc_servo.h>
 
-
-// define semaphore handle
-SemaphoreHandle_t xMutexSemaphore;
 EventGroupHandle_t taskReadyBits = NULL;
 MessageBufferHandle_t downLinkMessageBufferHandle = NULL;
 
@@ -42,33 +39,19 @@ CO2_t co2_sensor;
 #define BIT_LIGHT_READY (1 << 2)
 
 
+void createTasksForSensors(){
+	temperature_sensor = createTemp(3, taskReadyBits, BIT_TEMP_READY);
+	co2_sensor = createCO2(3, taskReadyBits, BIT_CO2_READY);
+	lighthandler = createLightSensor(3, taskReadyBits, BIT_LIGHT_READY);
+}
 
 void create_tasks_and_semaphores(void)
 {
-	// Semaphores are useful to stop a Task proceeding, where it should be paused to wait,
-	// because it is sharing a resource, such as the Serial port.
-	// Semaphores should only be used whilst the scheduler is running, but we can set it up here.
-	if ( xMutexSemaphore == NULL )  // Check to confirm that the Semaphore has not already been created.
-	{
-		xMutexSemaphore = xSemaphoreCreateMutex();  // Create a mutex semaphore.
-		if ( ( xMutexSemaphore ) != NULL )
-		{
-			xSemaphoreGive( ( xMutexSemaphore ) );  // Make the mutex available for use, by initially "Giving" the Semaphore.
-		}
-	}
-	
 	create_shared_printf();
 	createTasksForSensors();
-	create_semaphore_mutex_and_sensors(temperature_sensor);
+	create_semaphore_mutex_and_sensors(temperature_sensor, co2_sensor, lighthandler);
 	DownLinkHandler_Create(4, downLinkMessageBufferHandle);
-	lora_handler_initialize(2, temperature_sensor, co2_sensor, xMutexSemaphore, lighthandler);	
-}
-
-void createTasksForSensors(){
-	temperature_sensor = createTemp(3, taskReadyBits, BIT_TEMP_READY, xMutexSemaphore);
-	lighthandler = createLightSensor(3, taskReadyBits, BIT_LIGHT_READY, xMutexSemaphore);
-	co2_sensor = createCO2(3, taskReadyBits, BIT_CO2_READY, xMutexSemaphore);
-	
+	lora_handler_initialize(2, downLinkMessageBufferHandle);	
 }
 
 void initializeSystem(){

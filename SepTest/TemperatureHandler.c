@@ -13,7 +13,6 @@
 
 EventGroupHandle_t group_start;
 EventBits_t ready_bit;
-SemaphoreHandle_t xMutexSemaphore;
 
 void startReading(void* self);
 
@@ -22,8 +21,12 @@ typedef struct TemperatureHandler{
 	uint16_t humidity;
 	} TemperatureHandler;
 	
+void temperature_handler_init(Temperature_t self, uint16_t priority){
+	xEventGroupSetBits(group_start, ready_bit);
+	xTaskCreate(startReading, "Temperature task", configMINIMAL_STACK_SIZE,(void *) self, priority, NULL);
+}
 
-Temperature_t createTemp(uint16_t priority, EventGroupHandle_t taskBits, EventBits_t bit, SemaphoreHandle_t mutex){
+Temperature_t createTemp(uint16_t priority, EventGroupHandle_t taskBits, EventBits_t bit){
 	Temperature_t new_measure = malloc(sizeof(TemperatureHandler));
 	if(new_measure == NULL){
 		return NULL;
@@ -33,7 +36,6 @@ Temperature_t createTemp(uint16_t priority, EventGroupHandle_t taskBits, EventBi
 	
 	group_start = taskBits;
 	ready_bit = bit;
-	xMutexSemaphore = mutex;
 	
 	if (HIH8120_OK == hih8120_initialise())
 	{
@@ -42,6 +44,10 @@ Temperature_t createTemp(uint16_t priority, EventGroupHandle_t taskBits, EventBi
 	
 	temperature_handler_init(new_measure, priority);
 	return new_measure;
+}
+
+void measureTempAndHum(Temperature_t self){
+	set_temp_hum_mutex();
 }
 
 void startReading(void* self){
@@ -63,21 +69,15 @@ void startReading(void* self){
 													portMAX_DELAY);
 		
 		vTaskDelay(pdMS_TO_TICKS(70));
+		if ((readyBits & (ready_bit)) == (ready_bit)) {
 		hih8120_measure(); //measure temperature and humidity
 		vTaskDelay(pdMS_TO_TICKS(15)); //wait for the measuring to be finished
 		
 		measureTempAndHum((Temperature_t) self);
+		}
 	}
 }
 
-void measureTempAndHum(Temperature_t self){
-	set_temp_hum_val();
-}
-
-void temperature_handler_init(Temperature_t self, uint16_t priority){
-	xEventGroupSetBits(group_start, ready_bit);
-	xTaskCreate(startReading, "Temperature task", configMINIMAL_STACK_SIZE,(void *) self, priority, NULL);
-}
 
 float getTemperature(Temperature_t self){
 	return self->temperature;
@@ -87,7 +87,7 @@ uint16_t getHumidity(Temperature_t self){
 	return self -> humidity;
 }
 
-void set_values(Temperature_t self){
+void temp_hum_set(Temperature_t self){
 	self->temperature = hih8120_getTemperature();
 	self->humidity = hih8120_getHumidityPercent_x10()/10;
 }

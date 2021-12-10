@@ -13,6 +13,7 @@
 
 typedef struct CO2Handler* CO2_t;
 
-CO2_t createCO2(uint16_t priority, EventGroupHandle_t taskBits, EventBits_t bit, SemaphoreHandle_t mutex);
+CO2_t createCO2(uint16_t priority, EventGroupHandle_t taskBits, EventBits_t bit);
+void set_co2(CO2_t self);
 uint16_t getCO2(CO2_t self);
   
