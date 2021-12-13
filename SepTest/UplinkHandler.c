@@ -3,18 +3,19 @@
 * This class is responsible for handling any networking required to send data to the LoRaWAN Network.
 *
 * Created: 11-Nov-21 9:28:17 AM
-*  Author: cirst and Gosia
+*  Author: Bogdan and Gosia
 */
 
-#include <lora_driver.h>
 #include "TemperatureHandler.h"
 #include "CO2Handler.h"
 #include "LightHandler.h"
 #include "SharedSensorData.h"
 #include "SharedPrintf.h"
+
+#include <lora_driver.h>
 #include <math.h>
 #include <stdio.h>
-#include "message_buffer.h"
+#include <message_buffer.h>
 #include <rc_servo.h>
 
 #define LORA_appEUI "9276B3CF3B069355"
@@ -79,7 +80,7 @@ static void _lora_setup(void)
 	
 	do {
 		rc = lora_driver_join(LORA_OTAA);
-		print_sharedf("Join Network TriesLeft:%d >%s<", maxJoinTriesLeft, lora_driver_mapReturnCodeToText(rc));
+		print_sharedf("Join Network Tries Left:%d >%s<", maxJoinTriesLeft, lora_driver_mapReturnCodeToText(rc));
 
 		if ( rc != LORA_ACCEPTED)
 		{
@@ -127,7 +128,7 @@ void lora_handler_task(void* pvParameters){
 	_lora_setup();
 	
 	TickType_t xLastWakeTime;
-	const TickType_t xFrequency = pdMS_TO_TICKS(30000UL); // Upload message every 5 minutes (300000 ms)
+	const TickType_t xFrequency = pdMS_TO_TICKS(300000UL); // Upload message every 5 minutes (300000 ms)
 	xLastWakeTime = xTaskGetTickCount();
 	
 	for(;;){
@@ -141,32 +142,37 @@ void lora_handler_task(void* pvParameters){
 		uint16_t co2_val = get_co2_mutex();
 		uint16_t light_val = get_light_mutex();
 		
+		if(temp == 0.0 || humidity == 0 || co2_val == 0){
+			print_sharedf("Sensors are still calibrating %f, %d, %d", temp, humidity, co2_val);
+		}
+		else{
 		double val1=0;
 		double val2=0;
 		val2 = modf(temp, &val1);
 		val2 = val2 * 100;
 		
 		//temperature
-		print_sharedf("temp: %f", temp);
+		print_sharedf("Temperature: %f", temp);
 		_uplink_payload.bytes[0] = (int) val1;
 		_uplink_payload.bytes[1] = (int) val2;
 		
 		//humidity
-		print_sharedf("humidity: %d", humidity);
+		print_sharedf("Humidity: %d", humidity);
 		_uplink_payload.bytes[2] = humidity;
 		
 		//co2
-		print_sharedf("co2: %d", co2_val);
+		print_sharedf("CO2: %d", co2_val);
 		_uplink_payload.bytes[3] = co2_val >> 8;
 		_uplink_payload.bytes[4] = co2_val & 0xFF;
 		
 		//light
-		print_sharedf("light in lux: %d", light_val);
+		print_sharedf("Light in lux: %d", light_val);
 		_uplink_payload.bytes[5] = light_val >> 8;
 		_uplink_payload.bytes[6] = light_val & 0xFF;
 		
-		print_sharedf("Upload Message >%s<", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
-		
+		char* message = lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload));
+		print_sharedf("Upload Message >%s<", message);
+		}
 	}
 	
 }

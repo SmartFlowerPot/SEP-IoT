@@ -5,10 +5,11 @@
 * Author: IoT Team (Bogdan, Gosia, Claudiu)
 */
 
-#include "DownlinkHandler.h"
 #include <lora_driver.h>
 #include <message_buffer.h>
 #include <rc_servo.h>
+#include "DownlinkHandler.h"
+#include "SharedPrintf.h"
 
 static lora_driver_payload_t downlinkPayload;
 
@@ -37,17 +38,17 @@ void lora_DownLinkHandler_StartTask(MessageBufferHandle_t downLinkMessageBuffer)
 	if (1 == downlinkPayload.len){
 		if(downlinkPayload.bytes[0] == 1){
 			rc_servo_setPosition(1,-100); // fully open
+			print_sharedf("Window opened");
 		}
 		else{
 			rc_servo_setPosition(1, 100); // fully close
+			print_sharedf("Window closed");
 		}
-		
 	}
-	
 }
 
 /*
-* Task method used to run
+* Task method used to run the actual task
 */
 void lora_downlink_handler_task(void* downLinkMessageBuffer){
 	for(;;){

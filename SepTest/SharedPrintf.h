@@ -1,4 +1,3 @@
-
 /*
  * SharedPrintf.h
  *

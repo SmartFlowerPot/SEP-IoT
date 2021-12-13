@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <semphr.h>
 #include <ATMEGA_FreeRTOS.h>
-#include "event_groups.h"
+#include <event_groups.h>
 
 typedef struct LightHandler* LightHandler_t;
 

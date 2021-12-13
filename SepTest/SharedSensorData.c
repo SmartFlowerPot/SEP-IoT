@@ -1,4 +1,3 @@
-
 /*
 * SharedSensorData.c
 * This class is to be used for setting and getting any sensor data necessary. 
@@ -7,14 +6,16 @@
 * Created: 12/9/2021 12:08:32 PM
 * Author: Gosia
 */
+
+#include <stdlib.h>
 #include <ATMEGA_FreeRTOS.h>
 #include <semphr.h>
+
 #include "SharedSensorData.h"
 #include "TemperatureHandler.h"
 #include "SharedPrintf.h"
 #include "CO2Handler.h"
 #include "LightHandler.h"
-#include <stdlib.h>
 
 Temperature_t tempHum;
 CO2_t co2;

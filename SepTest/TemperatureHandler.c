@@ -15,6 +15,7 @@
 
 #include "TemperatureHandler.h"
 #include "SharedSensorData.h"
+#include "SharedPrintf.h"
 
 EventGroupHandle_t group_start;
 EventBits_t ready_bit;
@@ -50,7 +51,7 @@ Temperature_t createTemp(uint16_t priority, EventGroupHandle_t taskBits, EventBi
 	
 	if (HIH8120_OK == hih8120_initialise())
 	{
-		print_sharedf("Temp sensor initialized.");
+		print_sharedf("Temperature and humidity sensor initialized.");
 	}
 	
 	temperature_handler_init(new_measure, priority);

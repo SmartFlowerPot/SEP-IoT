@@ -12,6 +12,7 @@
 #include <task.h>
 #include <semphr.h>
 #include <tsl2591.h>
+
 #include "LightHandler.h"
 #include "SharedSensorData.h"
 #include "SharedPrintf.h"
@@ -61,7 +62,7 @@ void tsl2591Callback(tsl2591_returnCode_t rc, LightHandler_t self)
 			lux_val = _lux;
 			//setting data using the shared sensor data c file
 			set_light_mutex();
-			print_sharedf("Lux: %5.4f\n", _lux);
+			
 		}
 		else if( TSL2591_OVERFLOW == rc )
 		{
@@ -165,7 +166,5 @@ uint16_t getLight(LightHandler_t self){
 * Simple setter for the light level
 */
 void setLight(LightHandler_t self){
-	//needed to avoid problem values
-	if(self->lux != 0)
 		self->lux = lux_val;
 }

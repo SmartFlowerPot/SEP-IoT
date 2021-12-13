@@ -15,6 +15,7 @@
 #include "CO2Handler.h"
 #include "SharedPrintf.h"
 #include "SharedSensorData.h"
+#include "SharedPrintf.h"
 
 EventGroupHandle_t group_start;
 EventBits_t ready_bit;
@@ -75,6 +76,7 @@ CO2_t createCO2(uint16_t priority, EventGroupHandle_t taskBits, EventBits_t bit)
 	ready_bit = bit;
 	
 	mh_z19_initialise(ser_USART3);
+	print_sharedf("CO2 sensor initialized");
 	mh_z19_injectCallBack(CO2_callback);
 	
 	CO2_handler_init(priority, new_measure);
@@ -89,10 +91,7 @@ uint16_t getCO2(CO2_t self){
 }
 
 void set_co2(CO2_t self){
-	//needed to avoid problem values
-	if(((CO2_t)self)->CO2 != 0){
-		((CO2_t)self)->CO2 = ppm;
-	}
+	((CO2_t)self)->CO2 = ppm;
 }
 
 /*
@@ -119,6 +118,5 @@ void startReadingCO2(void* self) {
 				set_co2_mutex();
 			}
 		}
-		
 	}
 }
