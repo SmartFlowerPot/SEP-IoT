@@ -52,7 +52,7 @@ void create_tasks_and_semaphores(void)
 	createTasksForSensors();
 	create_semaphore_mutex_and_sensors();
 	DownLinkHandler_Create(4, downLinkMessageBufferHandle);
-	lora_handler_initialize(2);
+	lora_handler_initialize(2, taskReadyBits, BIT_TEMP_READY, BIT_CO2_READY, BIT_LIGHT_READY);
 }
 
 /*

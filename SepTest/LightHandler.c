@@ -62,6 +62,7 @@ void tsl2591Callback(tsl2591_returnCode_t rc, LightHandler_t self)
 			lux_val = _lux;
 			//setting data using the shared sensor data c file
 			set_light(_lux);
+			xEventGroupSetBits(group_start, ready_bit);
 			self ->lux = _lux;
 			
 		}
@@ -120,14 +121,14 @@ LightHandler_t createLightSensor(UBaseType_t light_priority, EventGroupHandle_t 
 void measure_light(LightHandler_t self){
 	
 	//set bits
-	EventBits_t readyBits = xEventGroupWaitBits(group_start,
-	ready_bit,
-	pdFALSE,
-	pdTRUE,
-	portMAX_DELAY);
+	//EventBits_t readyBits = xEventGroupWaitBits(group_start,
+	//ready_bit,
+	//pdFALSE,
+	//pdTRUE,
+	//portMAX_DELAY);
 	
 	//check if all bits are set
-	if ((readyBits & (ready_bit)) == (ready_bit)) {
+	//if ((readyBits & (ready_bit)) == (ready_bit)) {
 		if ( TSL2591_OK != tsl2591_fetchData() )
 		{
 			// Something went wrong
@@ -138,7 +139,7 @@ void measure_light(LightHandler_t self){
 			//The light data will be ready after the driver calls the call back function with
 			tsl2591Callback(TSL2591_DATA_READY, self);
 		}
-	}
+	//}
 }
 
 /*

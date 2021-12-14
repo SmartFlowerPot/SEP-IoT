@@ -18,19 +18,29 @@
 #include <stdio.h>
 #include <message_buffer.h>
 #include <rc_servo.h>
+#include <event_groups.h>
 
 #define LORA_appEUI "9276B3CF3B069355"
 #define LORA_appKEY "84860CBA5C5116F9EC56E1B4346CA899"
 
 static lora_driver_payload_t _uplink_payload;
 
+EventGroupHandle_t taskBits_ready;
+EventBits_t tempbit_ready;
+EventBits_t co2bit_ready;
+EventBits_t lightbit_ready;
 
 void lora_handler_task(void* pvParameters);
 
 /*
 * Function call used to start the networking task
 */
-void lora_handler_initialize(uint16_t lora_handler_task_priority){
+void lora_handler_initialize(uint16_t lora_handler_task_priority, EventGroupHandle_t taskReadyBits, EventBits_t tempbit, EventBits_t co2bit, EventBits_t lightbit){
+	
+	taskBits_ready = taskReadyBits;
+	tempbit_ready = tempbit;
+	co2bit_ready = co2bit;
+	lightbit_ready = lightbit;
 	
 	xTaskCreate(
 	lora_handler_task
@@ -114,6 +124,8 @@ static void _lora_setup(void)
 */
 void lora_handler_task(void* pvParameters){
 	
+	const TickType_t delay = 10000/portTICK_PERIOD_MS;
+	vTaskDelay(delay);
 	// Hardware reset of LoRaWAN transceiver
 	lora_driver_resetRn2483(1);
 	vTaskDelay(2);
@@ -126,50 +138,59 @@ void lora_handler_task(void* pvParameters){
 	_lora_setup();
 	
 	TickType_t xLastWakeTime;
-	const TickType_t xFrequency = pdMS_TO_TICKS(300000UL); // Upload message every 5 minutes (300000 ms)
+	const TickType_t xFrequency = pdMS_TO_TICKS(10000UL); // Upload message every 5 minutes (300000 ms)
 	xLastWakeTime = xTaskGetTickCount();
 	
 	for(;;){
 		
-		xTaskDelayUntil(&xLastWakeTime, xFrequency);
+		//xTaskDelayUntil(&xLastWakeTime, xFrequency);
 		_uplink_payload.len = 7;
 		_uplink_payload.portNo = 1;
 		
-		double temp = (double) get_temp();
-		uint16_t humidity = get_humidity();
-		uint16_t co2_val = get_co2();
-		uint16_t light_val = get_light();
+		EventBits_t readyBits = xEventGroupWaitBits(taskBits_ready,
+		tempbit_ready&co2bit_ready&lightbit_ready,
+		pdTRUE,
+		pdTRUE,
+		portMAX_DELAY);
 		
-		if(temp == 0.0 || humidity == 0 || co2_val == 0){
-			print_sharedf("Sensors are still calibrating %f, %d, %d", temp, humidity, co2_val);
-		}
-		else{
-		double val1=0;
-		double val2=0;
-		val2 = modf(temp, &val1);
-		val2 = val2 * 100;
-		
-		//temperature
-		print_sharedf("Temperature: %f", temp);
-		_uplink_payload.bytes[0] = (int) val1;
-		_uplink_payload.bytes[1] = (int) val2;
-		
-		//humidity
-		print_sharedf("Humidity: %d", humidity);
-		_uplink_payload.bytes[2] = humidity;
-		
-		//co2
-		print_sharedf("CO2: %d", co2_val);
-		_uplink_payload.bytes[3] = co2_val >> 8;
-		_uplink_payload.bytes[4] = co2_val & 0xFF;
-		
-		//light
-		print_sharedf("Light in lux: %d", light_val);
-		_uplink_payload.bytes[5] = light_val >> 8;
-		_uplink_payload.bytes[6] = light_val & 0xFF;
-		
-		char* message = lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload));
-		print_sharedf("Upload Message >%s<", message);
+		if((readyBits & (tempbit_ready&co2bit_ready&lightbit_ready)) == (tempbit_ready&co2bit_ready&lightbit_ready)){
+			
+			double temp = (double) get_temp();
+			uint16_t humidity = get_humidity();
+			uint16_t co2_val = get_co2();
+			uint16_t light_val = get_light();
+			
+			if(temp == 0.0 || humidity == 0 || co2_val == 0){
+				print_sharedf("Sensors are still calibrating %f, %d, %d", temp, humidity, co2_val);
+			}
+			else{
+				double val1=0;
+				double val2=0;
+				val2 = modf(temp, &val1);
+				val2 = val2 * 100;
+				
+				//temperature
+				print_sharedf("Temperature: %f", temp);
+				_uplink_payload.bytes[0] = (int) val1;
+				_uplink_payload.bytes[1] = (int) val2;
+				
+				//humidity
+				print_sharedf("Humidity: %d", humidity);
+				_uplink_payload.bytes[2] = humidity;
+				
+				//co2
+				print_sharedf("CO2: %d", co2_val);
+				_uplink_payload.bytes[3] = co2_val >> 8;
+				_uplink_payload.bytes[4] = co2_val & 0xFF;
+				
+				//light
+				print_sharedf("Light in lux: %d", light_val);
+				_uplink_payload.bytes[5] = light_val >> 8;
+				_uplink_payload.bytes[6] = light_val & 0xFF;
+				
+				//char* message = lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload));
+				//print_sharedf("Upload Message >%s<", message);
+			}
 		}
 	}
 	

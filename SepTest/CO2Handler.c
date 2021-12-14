@@ -47,7 +47,7 @@ void CO2_callback(uint16_t callback){
 * Method used for setting bits within an RTOS event group and for creating task.
 */
 void CO2_handler_init(uint16_t CO2_task_priority, CO2_t self){
-	xEventGroupSetBits(group_start, ready_bit);
+	//xEventGroupSetBits(group_start, ready_bit);
 
 	xTaskCreate(
 	startReadingCO2
@@ -95,19 +95,21 @@ void startReadingCO2(void* self) {
 	{
 		xTaskDelayUntil(&xLastWakeTime, xFrequency);
 		
-		EventBits_t readyBits = xEventGroupWaitBits(group_start,
-		ready_bit,
-		pdFALSE,
-		pdTRUE,
-		portMAX_DELAY);
-		if ((readyBits & (ready_bit)) == (ready_bit)) {
+		//EventBits_t readyBits = xEventGroupWaitBits(group_start,
+		//ready_bit,
+		//pdFALSE,
+		//pdTRUE,
+		//portMAX_DELAY);
+		
+		//if ((readyBits & (ready_bit)) == (ready_bit)) {
 			rc = mh_z19_takeMeassuring();
 			if (rc != MHZ19_OK){
 				// Something went wrong
 				} else {
 				((CO2_t)self)->CO2 = ppm;
 				set_co2(ppm);
+				xEventGroupSetBits(group_start, ready_bit);
 			}
-		}
+		//}
 	}
 }

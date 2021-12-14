@@ -31,7 +31,7 @@ typedef struct TemperatureHandler{
 * initialize bits and create the task
 */
 void temperature_handler_init(Temperature_t self, uint16_t priority){
-	xEventGroupSetBits(group_start, ready_bit);
+	//xEventGroupSetBits(group_start, ready_bit);
 	xTaskCreate(startReading, "Temperature task", configMINIMAL_STACK_SIZE,(void *) self, priority, NULL);
 }
 
@@ -67,6 +67,7 @@ void measureTempAndHum(Temperature_t self){
 	self->humidity = hih8120_getHumidityPercent_x10()/10;
 	
 	set_temp_hum(self->temperature, self->humidity);
+	xEventGroupSetBits(group_start, ready_bit);
 }
 
 /*
@@ -87,21 +88,21 @@ void startReading(void* self){
 		}
 		
 		//set bits
-		EventBits_t readyBits = xEventGroupWaitBits(group_start,
-		ready_bit,
-		pdFALSE,
-		pdTRUE,
-		portMAX_DELAY);
+		//EventBits_t readyBits = xEventGroupWaitBits(group_start,
+		//ready_bit,
+		//pdFALSE,
+		//pdTRUE,
+		//portMAX_DELAY);
 		
 		//give the sensor time to wake up
 		vTaskDelay(pdMS_TO_TICKS(70));
 		//check if the bits are set
-		if ((readyBits & (ready_bit)) == (ready_bit)) {
+		//if ((readyBits & (ready_bit)) == (ready_bit)) {
 			hih8120_measure(); //measure temperature and humidity
 			vTaskDelay(pdMS_TO_TICKS(15)); //wait for the measuring to be finished
 			
 			measureTempAndHum((Temperature_t) self);
-		}
+		//}
 	}
 }
 
