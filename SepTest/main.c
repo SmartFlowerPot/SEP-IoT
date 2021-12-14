@@ -50,7 +50,7 @@ void create_tasks_and_semaphores(void)
 	create_shared_printf();
 	print_sharedf("Board started.");
 	createTasksForSensors();
-	create_semaphore_mutex_and_sensors(temperature_sensor, co2_sensor, lighthandler);
+	create_semaphore_mutex_and_sensors();
 	DownLinkHandler_Create(4, downLinkMessageBufferHandle);
 	lora_handler_initialize(2);
 }

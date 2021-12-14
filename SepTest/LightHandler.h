@@ -16,5 +16,3 @@
 typedef struct LightHandler* LightHandler_t;
 
 LightHandler_t createLightSensor(UBaseType_t light_priority, EventGroupHandle_t eventBits, EventBits_t bits);
-void setLight(LightHandler_t self);
-uint16_t getLight(LightHandler_t self);

@@ -10,38 +10,34 @@
 #include <stdlib.h>
 #include <ATMEGA_FreeRTOS.h>
 #include <semphr.h>
+#include <stdint.h>
 
 #include "SharedSensorData.h"
-#include "TemperatureHandler.h"
 #include "SharedPrintf.h"
-#include "CO2Handler.h"
-#include "LightHandler.h"
 
-Temperature_t tempHum;
-CO2_t co2;
-LightHandler_t light;
 SemaphoreHandle_t xMutexSemaphore;
 
+static float temperature_value = 0.0;
+static uint16_t humidity_value = 0;
+static uint16_t co2_value = 0;
+static uint16_t light_value = 0;
 /*
 * Function used to initialize pointers to the necessary structs and initializing the mutex for the shared data
 */
-void create_semaphore_mutex_and_sensors(Temperature_t temperatureObject, CO2_t co2Object, LightHandler_t lightObject){
+void create_semaphore_mutex_and_sensors(){
 	if (xMutexSemaphore == NULL){
 		xMutexSemaphore = xSemaphoreCreateMutex();
 	}
-	
-	tempHum = temperatureObject;
-	co2 = co2Object;
-	light = lightObject;
 }
 
 /*
 * Function used to set the temperature and humidity, protected by the mutex 
 */
-void set_temp_hum_mutex(){
+void set_temp_hum(float temp, uint16_t hum){
 	
 	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 300) == pdTRUE){
-		temp_hum_set(tempHum);
+		temperature_value = temp;
+		humidity_value = hum;
 		xSemaphoreGive(xMutexSemaphore);
 		} else{
 		print_sharedf("The mutex could not be obtained.");
@@ -51,11 +47,11 @@ void set_temp_hum_mutex(){
 /*
 * Getter for the humidity, protected by the mutex
 */
-uint16_t get_humidity_val(){
+uint16_t get_humidity(){
 	uint16_t tmp;
 
 	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 300) == pdTRUE){
-		tmp = getHumidity(tempHum);
+		tmp = humidity_value;
 		xSemaphoreGive(xMutexSemaphore);
 		return tmp;
 		} else{
@@ -67,11 +63,11 @@ uint16_t get_humidity_val(){
 /*
 * Getter for the temperature, protected by the mutex
 */
-float get_temp_val(){
+float get_temp(){
 	float tmp;
 	
 	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 300) == pdTRUE){
-		tmp = getTemperature(tempHum);
+		tmp = temperature_value;
 		xSemaphoreGive(xMutexSemaphore);
 		return tmp;
 		} else{
@@ -83,9 +79,9 @@ float get_temp_val(){
 /*
 * Setter for the co2, protected by the mutex
 */
-void set_co2_mutex(){
+void set_co2(uint16_t co2){
 	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 300) == pdTRUE){
-		set_co2(co2);
+		co2_value = co2;
 		xSemaphoreGive(xMutexSemaphore);
 		} else{
 		print_sharedf("The mutex could not be obtained.");
@@ -95,11 +91,11 @@ void set_co2_mutex(){
 /*
 * Getter for co2, protected by the mutex
 */
-uint16_t get_co2_mutex(){
+uint16_t get_co2(){
 	uint16_t tmp;
 	
 	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 300) == pdTRUE){
-		tmp = getCO2(co2);
+		tmp = co2_value;
 		xSemaphoreGive(xMutexSemaphore);
 		return tmp;
 		} else{
@@ -111,9 +107,9 @@ uint16_t get_co2_mutex(){
 /*
 * Setter for light levels, protected by the mutex
 */
-void set_light_mutex(){
+void set_light(uint16_t light_lux){
 	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 300) == pdTRUE){
-		setLight(light);
+		light_value = light_lux;
 		xSemaphoreGive(xMutexSemaphore);
 		} else{
 		print_sharedf("The mutex could not be obtained.");
@@ -123,11 +119,11 @@ void set_light_mutex(){
 /*
 * Getter for the light levels, protected by the mutex
 */
-uint16_t get_light_mutex(){
+uint16_t get_light(){
 	uint16_t tmp;
 	
 	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 300) == pdTRUE){
-		tmp = getLight(light);
+		tmp = light_value;
 		xSemaphoreGive(xMutexSemaphore);
 		return tmp;
 		} else{

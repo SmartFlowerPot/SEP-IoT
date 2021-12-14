@@ -62,7 +62,11 @@ Temperature_t createTemp(uint16_t priority, EventGroupHandle_t taskBits, EventBi
 * set data using the shared sensor data c file
 */
 void measureTempAndHum(Temperature_t self){
-	set_temp_hum_mutex();
+
+	self->temperature = hih8120_getTemperature();
+	self->humidity = hih8120_getHumidityPercent_x10()/10;
+	
+	set_temp_hum(self->temperature, self->humidity);
 }
 
 /*
@@ -101,27 +105,3 @@ void startReading(void* self){
 	}
 }
 
-/*
-* getter for temperature
-*/
-float getTemperature(Temperature_t self){
-	return self->temperature;
-}
-
-/*
-* getter for humidity
-*/
-uint16_t getHumidity(Temperature_t self){
-	return self -> humidity;
-}
-
-/*
-* setter for both temperature and humidity
-*/
-void temp_hum_set(Temperature_t self){
-	//needed to avoid problem values
-	if(hih8120_getTemperature() != 0)
-		self->temperature = hih8120_getTemperature();
-	if(hih8120_getHumidityPercent_x10() != 0)
-		self->humidity = hih8120_getHumidityPercent_x10()/10;
-}

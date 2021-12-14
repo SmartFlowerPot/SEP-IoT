@@ -6,13 +6,14 @@
 *  Author: Bogdan and Gosia
 */
 
+#include <lora_driver.h>
 #include "TemperatureHandler.h"
 #include "CO2Handler.h"
 #include "LightHandler.h"
 #include "SharedSensorData.h"
 #include "SharedPrintf.h"
 
-#include <lora_driver.h>
+
 #include <math.h>
 #include <stdio.h>
 #include <message_buffer.h>
@@ -21,9 +22,6 @@
 #define LORA_appEUI "9276B3CF3B069355"
 #define LORA_appKEY "84860CBA5C5116F9EC56E1B4346CA899"
 
-Temperature_t temperatureAndHumidity;
-CO2_t co2;
-LightHandler_t light_handler;
 static lora_driver_payload_t _uplink_payload;
 
 
@@ -137,10 +135,10 @@ void lora_handler_task(void* pvParameters){
 		_uplink_payload.len = 7;
 		_uplink_payload.portNo = 1;
 		
-		double temp = (double) get_temp_val();
-		uint16_t humidity = get_humidity_val();
-		uint16_t co2_val = get_co2_mutex();
-		uint16_t light_val = get_light_mutex();
+		double temp = (double) get_temp();
+		uint16_t humidity = get_humidity();
+		uint16_t co2_val = get_co2();
+		uint16_t light_val = get_light();
 		
 		if(temp == 0.0 || humidity == 0 || co2_val == 0){
 			print_sharedf("Sensors are still calibrating %f, %d, %d", temp, humidity, co2_val);

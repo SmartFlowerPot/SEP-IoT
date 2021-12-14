@@ -61,7 +61,8 @@ void tsl2591Callback(tsl2591_returnCode_t rc, LightHandler_t self)
 		{
 			lux_val = _lux;
 			//setting data using the shared sensor data c file
-			set_light_mutex();
+			set_light(_lux);
+			self ->lux = _lux;
 			
 		}
 		else if( TSL2591_OVERFLOW == rc )
@@ -155,16 +156,3 @@ void startReadingLight(void* self){
 	}
 }
 
-/*
-* Simple getter for the light level
-*/
-uint16_t getLight(LightHandler_t self){
-	return self->lux;
-}
-
-/*
-* Simple setter for the light level
-*/
-void setLight(LightHandler_t self){
-		self->lux = lux_val;
-}

@@ -25,8 +25,7 @@ TemperatureHandler.d TemperatureHandler.o: .././TemperatureHandler.c \
  ../FreeRTOS/src/queue.h .././TemperatureHandler.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
  ../FreeRTOS/src/event_groups.h ../FreeRTOS/src/timers.h \
- .././SharedSensorData.h .././CO2Handler.h .././LightHandler.h \
- .././SharedPrintf.h
+ .././SharedSensorData.h .././SharedPrintf.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdint.h:
 
@@ -97,9 +96,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ../FreeRTOS/src/timers.h:
 
 .././SharedSensorData.h:
-
-.././CO2Handler.h:
-
-.././LightHandler.h:
 
 .././SharedPrintf.h:

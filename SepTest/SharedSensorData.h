@@ -6,18 +6,16 @@
  *  Author: Gosia
  */ 
 
-#include "TemperatureHandler.h"
-#include "CO2Handler.h"
-#include "LightHandler.h"
+
 
 #include <stdint.h>
 
 
-void create_semaphore_mutex_and_sensors(Temperature_t temperatureObject, CO2_t co2Object, LightHandler_t lightObject);
-void set_temp_hum_mutex();
-uint16_t get_humidity_val();
-float get_temp_val();
-void set_co2_mutex();
-uint16_t get_co2_mutex();
-void set_light_mutex();
-uint16_t get_light_mutex();
+void create_semaphore_mutex_and_sensors();
+void set_temp_hum(float temp, uint16_t hum);
+uint16_t get_humidity();
+float get_temp();
+void set_co2(uint16_t co2);
+uint16_t get_co2();
+void set_light(uint16_t light_lux);
+uint16_t get_light();

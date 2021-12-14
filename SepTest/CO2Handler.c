@@ -83,16 +83,6 @@ CO2_t createCO2(uint16_t priority, EventGroupHandle_t taskBits, EventBits_t bit)
 	return new_measure;
 }
 
-/*
-* Method used for returning the CO2 value.
-*/
-uint16_t getCO2(CO2_t self){
-	return self->CO2;
-}
-
-void set_co2(CO2_t self){
-	((CO2_t)self)->CO2 = ppm;
-}
 
 /*
 * Task for taking the CO2 measurements and setting the CO2 value accordingly.
@@ -115,7 +105,8 @@ void startReadingCO2(void* self) {
 			if (rc != MHZ19_OK){
 				// Something went wrong
 				} else {
-				set_co2_mutex();
+				((CO2_t)self)->CO2 = ppm;
+				set_co2(ppm);
 			}
 		}
 	}
