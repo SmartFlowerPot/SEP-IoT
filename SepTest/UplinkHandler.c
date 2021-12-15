@@ -124,8 +124,9 @@ static void _lora_setup(void)
 */
 void lora_handler_task(void* pvParameters){
 	
-	const TickType_t delay = 10000/portTICK_PERIOD_MS;
-	vTaskDelay(delay);
+	TickType_t xLastWakeTime;
+	const TickType_t xFrequency = pdMS_TO_TICKS(300000UL); // Upload message every 5 minutes (300000 ms)
+	xLastWakeTime = xTaskGetTickCount();
 	// Hardware reset of LoRaWAN transceiver
 	lora_driver_resetRn2483(1);
 	vTaskDelay(2);
@@ -136,14 +137,10 @@ void lora_handler_task(void* pvParameters){
 	lora_driver_flushBuffers(); // get rid of first version string from module after reset!
 
 	_lora_setup();
-	
-	TickType_t xLastWakeTime;
-	const TickType_t xFrequency = pdMS_TO_TICKS(10000UL); // Upload message every 5 minutes (300000 ms)
-	xLastWakeTime = xTaskGetTickCount();
-	
+	print_sharedf("task run;");
 	for(;;){
 		
-		//xTaskDelayUntil(&xLastWakeTime, xFrequency);
+		xTaskDelayUntil(&xLastWakeTime, xFrequency);
 		_uplink_payload.len = 7;
 		_uplink_payload.portNo = 1;
 		
@@ -188,8 +185,8 @@ void lora_handler_task(void* pvParameters){
 				_uplink_payload.bytes[5] = light_val >> 8;
 				_uplink_payload.bytes[6] = light_val & 0xFF;
 				
-				//char* message = lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload));
-				//print_sharedf("Upload Message >%s<", message);
+				char* message = lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload));
+				print_sharedf("Upload Message >%s<", message);
 			}
 		}
 	}
