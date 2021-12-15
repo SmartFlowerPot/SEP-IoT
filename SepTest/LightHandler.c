@@ -119,16 +119,6 @@ LightHandler_t createLightSensor(UBaseType_t light_priority, EventGroupHandle_t 
 * Function used for measuring
 */
 void measure_light(LightHandler_t self){
-	
-	//set bits
-	//EventBits_t readyBits = xEventGroupWaitBits(group_start,
-	//ready_bit,
-	//pdFALSE,
-	//pdTRUE,
-	//portMAX_DELAY);
-	
-	//check if all bits are set
-	//if ((readyBits & (ready_bit)) == (ready_bit)) {
 		if ( TSL2591_OK != tsl2591_fetchData() )
 		{
 			// Something went wrong
@@ -139,7 +129,6 @@ void measure_light(LightHandler_t self){
 			//The light data will be ready after the driver calls the call back function with
 			tsl2591Callback(TSL2591_DATA_READY, self);
 		}
-	//}
 }
 
 /*

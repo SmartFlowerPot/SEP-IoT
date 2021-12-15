@@ -35,7 +35,8 @@ void lora_handler_task(void* pvParameters);
 /*
 * Function call used to start the networking task
 */
-void lora_handler_initialize(uint16_t lora_handler_task_priority, EventGroupHandle_t taskReadyBits, EventBits_t tempbit, EventBits_t co2bit, EventBits_t lightbit){
+void lora_handler_initialize(uint16_t lora_handler_task_priority, EventGroupHandle_t taskReadyBits, 
+EventBits_t tempbit, EventBits_t co2bit, EventBits_t lightbit){
 	
 	taskBits_ready = taskReadyBits;
 	tempbit_ready = tempbit;
@@ -44,7 +45,7 @@ void lora_handler_initialize(uint16_t lora_handler_task_priority, EventGroupHand
 	
 	xTaskCreate(
 	lora_handler_task
-	, "LoRaWAN Hand"
+	, "LoRaWAN Uplink"
 	, configMINIMAL_STACK_SIZE + 200
 	, NULL
 	, lora_handler_task_priority
@@ -137,7 +138,7 @@ void lora_handler_task(void* pvParameters){
 	lora_driver_flushBuffers(); // get rid of first version string from module after reset!
 
 	_lora_setup();
-	print_sharedf("task run;");
+	
 	for(;;){
 		
 		xTaskDelayUntil(&xLastWakeTime, xFrequency);

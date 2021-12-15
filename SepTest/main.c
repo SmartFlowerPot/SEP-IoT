@@ -56,10 +56,10 @@ void create_tasks_and_semaphores(void)
 }
 
 /*
-* Function call that initializes the Event groups, the Arduino board, Downlink message buffer, tasks, and Sempahore mutex
+* Function call that initializes the Event groups, the Arduino board, Downlink message buffer, tasks
 */
 void initializeSystem(){
-	// initialize ready bits
+	// create event group
 	taskReadyBits = xEventGroupCreate();
 	
 	// Make it possible to use stdio on COM port 3 (USB) on Arduino board - Setting 57600,8,N,1
@@ -77,3 +77,4 @@ int main(void){
 	vTaskStartScheduler();
 	while(1){}
 }
+

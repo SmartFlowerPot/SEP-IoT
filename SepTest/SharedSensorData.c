@@ -35,7 +35,7 @@ void create_semaphore_mutex_and_sensors(){
 */
 void set_temp_hum(float temp, uint16_t hum){
 	
-	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 300) == pdTRUE){
+	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) portMAX_DELAY) == pdTRUE){
 		temperature_value = temp;
 		humidity_value = hum;
 		xSemaphoreGive(xMutexSemaphore);
@@ -50,7 +50,7 @@ void set_temp_hum(float temp, uint16_t hum){
 uint16_t get_humidity(){
 	uint16_t tmp;
 
-	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 300) == pdTRUE){
+	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) portMAX_DELAY) == pdTRUE){
 		tmp = humidity_value;
 		xSemaphoreGive(xMutexSemaphore);
 		return tmp;
@@ -66,7 +66,7 @@ uint16_t get_humidity(){
 float get_temp(){
 	float tmp;
 	
-	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 300) == pdTRUE){
+	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) portMAX_DELAY) == pdTRUE){
 		tmp = temperature_value;
 		xSemaphoreGive(xMutexSemaphore);
 		return tmp;
@@ -80,7 +80,7 @@ float get_temp(){
 * Setter for the co2, protected by the mutex
 */
 void set_co2(uint16_t co2){
-	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 300) == pdTRUE){
+	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) portMAX_DELAY) == pdTRUE){
 		co2_value = co2;
 		xSemaphoreGive(xMutexSemaphore);
 		} else{
@@ -94,7 +94,7 @@ void set_co2(uint16_t co2){
 uint16_t get_co2(){
 	uint16_t tmp;
 	
-	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 300) == pdTRUE){
+	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) portMAX_DELAY) == pdTRUE){
 		tmp = co2_value;
 		xSemaphoreGive(xMutexSemaphore);
 		return tmp;
@@ -108,7 +108,7 @@ uint16_t get_co2(){
 * Setter for light levels, protected by the mutex
 */
 void set_light(uint16_t light_lux){
-	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 300) == pdTRUE){
+	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) portMAX_DELAY) == pdTRUE){
 		light_value = light_lux;
 		xSemaphoreGive(xMutexSemaphore);
 		} else{
@@ -122,7 +122,7 @@ void set_light(uint16_t light_lux){
 uint16_t get_light(){
 	uint16_t tmp;
 	
-	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) 300) == pdTRUE){
+	if(xSemaphoreTake(xMutexSemaphore, (TickType_t) portMAX_DELAY) == pdTRUE){
 		tmp = light_value;
 		xSemaphoreGive(xMutexSemaphore);
 		return tmp;
